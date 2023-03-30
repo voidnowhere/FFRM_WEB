@@ -42,10 +42,13 @@ export default function Header() {
                                 <Nav.Link onClick={logout}>Logout</Nav.Link>
                             </>)
                             :
-                            (<Nav.Link as={Link} to="/login" active={Boolean(useMatch('/login'))}>Login</Nav.Link>)
+                            (<>
+                                <Nav.Link as={Link} to="/login"
+                                          active={Boolean(useMatch('/login'))}>Login</Nav.Link>
+                                <Nav.Link as={Link} to="/register"
+                                          active={Boolean(useMatch('/register'))}>Register</Nav.Link>
+                            </>)
                         }
-                        {!isAuthenticated && <Nav.Link as={Link} to="/register"
-                                                       active={Boolean(useMatch('/register'))}>Register</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>
             </Container>
