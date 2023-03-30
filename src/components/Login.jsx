@@ -23,7 +23,6 @@ export default function Login() {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             setIsAuthenticated(true);
-            axiosInstance.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;
             setEmail('');
             setPassword('');
             Notify.success('Successful login', {

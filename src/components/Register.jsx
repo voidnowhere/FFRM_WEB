@@ -42,7 +42,6 @@ export default function Register() {
             });
             navigate('/login');
         }).catch((error) => {
-            console.log(error);
             const errors = error.response.data;
             setEmailError(errors.email);
             setNicError(errors.nic);
