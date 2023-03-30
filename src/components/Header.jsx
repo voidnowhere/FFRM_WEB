@@ -3,6 +3,7 @@ import {Link, useMatch, useNavigate} from "react-router-dom";
 import {Notify} from "notiflix/build/notiflix-notify-aio";
 import {useContext} from "react";
 import {AppContext} from "../App.jsx";
+import axiosInstance from "../axiosInstance.js";
 
 export default function Header() {
     const {isAuthenticated, setIsAuthenticated} = useContext(AppContext);
@@ -10,6 +11,9 @@ export default function Header() {
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
 
     function logout() {
+        axiosInstance.post('api/token/blacklist/', {
+            refresh: localStorage.getItem('refresh_token')
+        });
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         setIsAuthenticated(false);
