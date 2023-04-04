@@ -1,13 +1,14 @@
 import Header from "./Header.jsx";
 import {Button, Container, FloatingLabel, Form, FormControl} from "react-bootstrap";
-import {useContext, useState} from "react";
+import {useState} from "react";
 import axiosInstance from "../axiosInstance.js";
 import {Notify} from 'notiflix/build/notiflix-notify-aio';
 import {useNavigate} from "react-router-dom";
-import {AppContext} from "../App.jsx";
+import {useDispatch} from "react-redux";
+import {userLogin} from "../features/user/userSlice.js";
 
 export default function Login() {
-    const {setIsAuthenticated} = useContext(AppContext);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -22,7 +23,7 @@ export default function Login() {
         }).then((response) => {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
-            setIsAuthenticated(true);
+            dispatch(userLogin({'userType': response.data.type}));
             setEmail('');
             setPassword('');
             Notify.success('Successful login', {

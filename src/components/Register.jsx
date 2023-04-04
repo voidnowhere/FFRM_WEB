@@ -1,6 +1,6 @@
 import {useState} from "react";
 import axiosInstance from '../axiosInstance.js';
-import {Button, Container, FloatingLabel, Form, FormControl} from "react-bootstrap";
+import {Button, ButtonGroup, Container, FloatingLabel, Form, FormControl} from "react-bootstrap";
 import {Notify} from 'notiflix/build/notiflix-notify-aio';
 import Header from "./Header.jsx";
 import {useNavigate} from "react-router-dom";
@@ -17,10 +17,18 @@ export default function Register() {
     const [firstNameError, setFirstNameError] = useState('');
     const [last_name, setLastName] = useState('');
     const [lastNameError, setLastNameError] = useState('');
+    const [isPlayerType, setIsPlayerType] = useState(false);
+    const [isOwnerType, setIsOwnerType] = useState(false);
+    const [userTypeError, setUserTypeError] = useState('');
 
     function submit(event) {
         event.preventDefault();
+        if (!isPlayerType && !isOwnerType) {
+            setUserTypeError('This field is required.');
+            return;
+        }
         axiosInstance.post('api/users/register/', {
+            type: (isPlayerType) ? 'P' : (isOwnerType) ? 'O' : '',
             email: email,
             password: password,
             nic: nic,
@@ -43,6 +51,7 @@ export default function Register() {
             navigate('/login');
         }).catch((error) => {
             const errors = error.response.data;
+            setUserTypeError((errors.type) ? 'This field is required.' : '');
             setEmailError(errors.email);
             setNicError(errors.nic);
             setFirstNameError(errors.first_name);
@@ -82,6 +91,19 @@ export default function Register() {
                                       onChange={(e) => setPassword(e.target.value.trim())}/>
                         <div className="text-danger">{passwordError}</div>
                     </FloatingLabel>
+                    <div className="mt-3">
+                        <ButtonGroup aria-label="Type" className="d-flex">
+                            <Button variant="light" active={isPlayerType} onClick={() => {
+                                setIsPlayerType(true);
+                                setIsOwnerType(false);
+                            }}>Player</Button>
+                            <Button variant="light" active={isOwnerType} onClick={() => {
+                                setIsOwnerType(true);
+                                setIsPlayerType(false);
+                            }}>Owner</Button>
+                        </ButtonGroup>
+                        <div className="text-danger">{userTypeError}</div>
+                    </div>
                     <div className="d-grid gap-2 mt-3">
                         <Button variant={"primary"} size="lg" type="submit">Register</Button>
                     </div>

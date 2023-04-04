@@ -4,25 +4,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from "./components/Home.jsx";
 import Login from "./components/Login.jsx";
 import ProfileInformation from "./components/ProfileInformation.jsx";
-import {createContext, useState} from "react";
 import UpdatePassword from "./components/UpdatePassword.jsx";
-
-export const AppContext = createContext();
+import {useSelector} from "react-redux";
 
 export default function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
+    const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+
     return (
-        <AppContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/login" element={(isAuthenticated) ? <Navigate to="/"/> : <Login/>}/>
-                    <Route path="/register" element={(isAuthenticated) ? <Navigate to="/"/> : <Register/>}/>
-                    <Route path="/profile" element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
-                    <Route path="/update-password"
-                           element={(!isAuthenticated) ? <Navigate to="/login"/> : <UpdatePassword/>}/>
-                </Routes>
-            </BrowserRouter>
-        </AppContext.Provider>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/login" element={(isAuthenticated) ? <Navigate to="/"/> : <Login/>}/>
+                <Route path="/register" element={(isAuthenticated) ? <Navigate to="/"/> : <Register/>}/>
+                <Route path="/profile" element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
+                <Route path="/update-password"
+                       element={(!isAuthenticated) ? <Navigate to="/login"/> : <UpdatePassword/>}/>
+            </Routes>
+        </BrowserRouter>
     )
 }
