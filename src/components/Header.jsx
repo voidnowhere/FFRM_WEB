@@ -1,12 +1,13 @@
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link, useMatch, useNavigate} from "react-router-dom";
 import {Notify} from "notiflix/build/notiflix-notify-aio";
-import {useContext} from "react";
-import {AppContext} from "../App.jsx";
 import axiosInstance from "../axiosInstance.js";
+import {useDispatch, useSelector} from "react-redux";
+import {userLogout} from "../features/user/userSlice.js";
 
 export default function Header() {
-    const {isAuthenticated, setIsAuthenticated} = useContext(AppContext);
+    const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
 
@@ -16,7 +17,7 @@ export default function Header() {
         });
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        setIsAuthenticated(false);
+        dispatch(userLogout());
         Notify.success('Successful logout', {
             position: 'center-bottom',
         });
