@@ -6,6 +6,7 @@ import Login from "./components/Login.jsx";
 import ProfileInformation from "./components/ProfileInformation.jsx";
 import {createContext, useState} from "react";
 import UpdatePassword from "./components/UpdatePassword.jsx";
+import ListFieldTypeById from "./components/ListFieldTypeById.jsx";
 
 export const AppContext = createContext();
 
@@ -15,12 +16,13 @@ export default function App() {
         <AppContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Home/>}/>
+                    <Route path="/api/fieldType/:id" element={<ListFieldTypeById/>}/>
                     <Route path="/login" element={(isAuthenticated) ? <Navigate to="/"/> : <Login/>}/>
                     <Route path="/register" element={(isAuthenticated) ? <Navigate to="/"/> : <Register/>}/>
                     <Route path="/profile" element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
                     <Route path="/update-password"
                            element={(!isAuthenticated) ? <Navigate to="/login"/> : <UpdatePassword/>}/>
+                    <Route path="/" element={<Home/>}/>
                 </Routes>
             </BrowserRouter>
         </AppContext.Provider>

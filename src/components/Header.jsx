@@ -3,6 +3,7 @@ import {Link, useMatch, useNavigate} from "react-router-dom";
 import {Notify} from "notiflix/build/notiflix-notify-aio";
 import {useContext} from "react";
 import {AppContext} from "../App.jsx";
+import ListFieldType from "./ListFieldType.jsx";
 
 export default function Header() {
     const {isAuthenticated, setIsAuthenticated} = useContext(AppContext);
@@ -20,7 +21,7 @@ export default function Header() {
     }
 
     return (
-        <Navbar bg="light" expand="lg" className="shadow">
+        <Navbar bg="light" expand="lg" className="shadow" style={{display : "block"}}>
             <Container>
                 <Navbar.Brand>FFRM</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
@@ -40,6 +41,7 @@ export default function Header() {
                                     >Update password</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link onClick={logout}>Logout</Nav.Link>
+                                
                             </>)
                             :
                             (<Nav.Link as={Link} to="/login" active={Boolean(useMatch('/login'))}>Login</Nav.Link>)
@@ -48,7 +50,12 @@ export default function Header() {
                                                        active={Boolean(useMatch('/register'))}>Register</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>
+                
             </Container>
+           
+            
+            
         </Navbar>
+        
     )
 }
