@@ -11,6 +11,7 @@ export default function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
+    const isReservations = Boolean(useMatch('/reservations/available'));
 
     function logout() {
         axiosInstance.post('api/token/blacklist/', {
@@ -37,7 +38,7 @@ export default function Header() {
                         {
                             isAuthenticated
                             &&
-                            <NavDropdown title="Reservations" active={isProfile}>
+                            <NavDropdown title="Reservations" active={isReservations}>
                                 {
                                     isPlayer
                                     &&

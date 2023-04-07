@@ -26,6 +26,7 @@ function AvailableReservations() {
                         const reservationIndex = reservations.findIndex((reservation) => reservation.id === reservationId);
                         const reservation = reservations[reservationIndex];
                         reservation.is_joined = true;
+                        reservation.available_places--;
                         const newReservations = [...reservations];
                         newReservations[reservationIndex] = reservation;
                         setReservations(newReservations);
@@ -47,9 +48,6 @@ function AvailableReservations() {
                     }
                 });
             },
-            () => {
-            },
-            {},
         );
     }
 
@@ -57,37 +55,44 @@ function AvailableReservations() {
         <>
             <Header/>
             <Container className="mt-5">
-                <Table striped bordered hover>
+                <h3 className="mb-5">Available reservations</h3>
+                <Table hover striped className="rounded shadow">
                     <thead>
                     <tr>
-                        <th>Begin</th>
-                        <th>End</th>
                         <th>Football Field</th>
+                        <th>Date</th>
+                        <th>Time</th>
                         <th>Tags</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     {reservations.map((reservation) => (
-                        <tr key={reservation.id}>
-                            <td>{reservation.begin_date_time}</td>
-                            <td>{reservation.end_date_dime}</td>
+                        <tr key={reservation.id} className="align-middle">
                             <td>{reservation.field.name} {reservation.field.type.name}</td>
+                            <td>{reservation.date}</td>
+                            <td>{reservation.begin_time.slice(0, -3)}{' '}{reservation.end_time.slice(0, -3)}</td>
                             <td>
                                 {
-                                    (!reservation.is_joined) ?
-                                        <Badge
-                                            bg="primary">{reservation.available_places}
+                                    (reservation.available_places > 0) ?
+                                        <Badge bg="primary" className="me-1">
+                                            {reservation.available_places}
                                             {' '}Place{(reservation.available_places > 1) ? 's' : ''}
-                                        </Badge> :
-                                        <Badge bg="success">Joined</Badge>
+                                        </Badge>
+                                        :
+                                        <Badge bg="danger" className="me-1">Full</Badge>
+                                }
+                                {
+                                    reservation.is_joined
+                                    &&
+                                    <Badge bg="success" className="mt-1 mt-md-0">Joined</Badge>
                                 }
                             </td>
                             <td>
                                 {
                                     !reservation.is_joined
                                     &&
-                                    <Button variant="outline-primary"
+                                    <Button variant="outline-primary" size="sm"
                                             onClick={() => joinReservation(reservation.id)}
                                     >Join</Button>
                                 }
