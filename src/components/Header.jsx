@@ -33,6 +33,9 @@ export default function Header() {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/" active={Boolean(useMatch('/'))}>Home</Nav.Link>
                     </Nav>
+                    <Nav className="me-auto">
+                        <Nav.Link as={Link} to="/fields" active={Boolean(useMatch('/fields'))}>Fields</Nav.Link>
+                    </Nav>
                     <Nav>
                         {isAuthenticated ?
                             (<>
@@ -40,6 +43,7 @@ export default function Header() {
                                     <NavDropdown.Item as={Link} to="/profile"
                                                       active={Boolean(useMatch('/profile'))}
                                     >Information</NavDropdown.Item>
+                                    
                                     <NavDropdown.Item as={Link} to="/update-password"
                                                       active={Boolean(useMatch('/update-password'))}
                                     >Update password</NavDropdown.Item>
