@@ -1,8 +1,7 @@
-import React, { useState,useEffect } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../axiosInstance.js";
-
+import React, { useEffect, useState } from "react";
 Notify.init({
   position: "center-top", // Notification position
   distance: "10px", // Distance between notifications
@@ -12,33 +11,65 @@ Notify.init({
   fontSize: "16px", // Font size
   timeout: 3000,
 });
-const TYPE_CHOICES = ["naturelle", "synthetique"];
 
-function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [description, setDescription] = useState("");
-  const [field_type, setField_type] = useState("");
-  const [state, setState] = useState(false);
-  const [soilType, setSoilType] = useState("");
-  const [zone, setZone] = useState("");
-  const [cityId, setCityId] = useState("");
-  const [zones, setZones] = useState([]);
-  
+function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
+  const [updatedField, setUpdatedField] = useState(field);
+  const [id, setId] = useState(updatedField?.id);
+  const [name, setName] = useState(updatedField?.name);
+  const [address, setAddress] = useState(updatedField?.address);
+  const [latitude, setLatitude] = useState(updatedField?.latitude);
+  const [longitude, setLongitude] = useState(updatedField?.longitude);
+  const [description, setDescription] = useState(updatedField?.description);
+  const [field_type, setField_type] = useState(updatedField?.field_type);
+  const [state, setState] = useState(updatedField?.state);
+
+  const [soilType, setSoilType] = useState(updatedField?.soil_type);
+  const TYPE_CHOICES = ["naturelle", "synthetique"];
   const [nameError, setNameError] = useState([]);
   const [addressError, setAddressError] = useState([]);
   const [descriptionError, setDescriptionError] = useState([]);
+  const [zones, setZones] = useState([]);
+  const [field_types, setField_types] = useState([]);
   const [zoneError, setZoneError] = useState([]);
   const [typeError, setTypeError] = useState([]);
   const [soilTypeError, setSoilTypeError] = useState([]);
 
+  const [zoneId, setZoneId] = useState(updatedField?.zone);
+  const [cityId, setCityId] = useState("");
 
+
+  useEffect(() => {
+    const fetchFieldTypes = async () => {
+      const result = await axiosInstance.get("/api/fields/fieldtypes/");
+      setField_types(result.data);
+      // console.log(result.data);
+    };
+    fetchFieldTypes();
+  }, []);
+
+  
+  useEffect(() => {
+    const fetchFieldTypes = async () => {
+      const result = await axiosInstance.get("/api/fields/zones/");
+      setZones(result.data);
+      // console.log(result.data);
+    };
+    fetchFieldTypes();
+  }, []);
+  
+  useEffect(() => {
+    const fetchCity = async () => {
+      const result = await axiosInstance.get(`/api/fields/zones/${updatedField?.zone}/city`);
+      setCityId(result.data.id);
+      console.log(result.data);
+    };
+    fetchCity();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const field = {
+      id: id,
       name: name,
       address: address,
       latitude: latitude,
@@ -46,31 +77,21 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
       description: description,
       field_type: field_type,
       state: state,
-      zone: zone,
+      zone: zoneId,
       soil_type: soilType,
     };
-
-    console.log(field);
+    setUpdatedField(field);
+    // console.log(field);
     axiosInstance
-      .post("/api/fields/add/", field)
+      .put(`/api/fields/update/${updatedField.id}/`, field)
       .then((response) => {
         console.log(response);
-        Notify.success("Field added successfully.");
-        // Reset the form fields
-         // Call the onAddField callback function to refresh the list of fields
-        onAddField(response.data);
-        setName("");
-        setAddress("");
-        setLatitude("");
-        setLongitude("");
-        setDescription("");
-        setField_type("");
-        setState(false);
-        setZone("");
-        setCityId('');
-        setSoilType("");
 
-        
+        Notify.success("Field updated successfully.");
+        // Reset the form fields
+        // Call the onAddField callback function to refresh the list of fields
+        updateField(response.data);
+        onHide();
       })
       .catch((error) => {
         const errors = error.response.data;
@@ -81,11 +102,9 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
         setSoilTypeError(errors.soil_type);
         setZoneError(errors.zone);
         setTypeError(errors.field_type);
-        Notify.failure("Failed to add field.");
+        Notify.failure("Failed to update field.");
       });
   };
-
-
   const handleCityChange = (e) => {
     const cityId = e.target.value;
     setCityId(cityId);
@@ -94,10 +113,11 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
             setZones(response.data);
         });
 };
+
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={showModal} onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title>Add a new field</Modal.Title>
+        <Modal.Title>Edit Field</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -157,7 +177,6 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
             />
           </Form.Group>
 
-
           <Form.Group controlId="formZone">
             <Form.Label>City</Form.Label>
             <Form.Control
@@ -179,8 +198,8 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
             <Form.Label>Zone</Form.Label>
             <Form.Control
               as="select"
-              value={zone}
-              onChange={(event) => setZone(event.target.value)}
+              value={zoneId}
+              onChange={(event) => setZoneId(event.target.value)}
             >
               <option value="">--Select a zone--</option>
               {zones.map((zone) => (
@@ -199,10 +218,10 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
               onChange={(e) => setField_type(e.target.value)}
             >
               <option>--Select a type--</option>
-              {fieldTypes &&
-                fieldTypes.map((fieldType) => (
-                  <option key={fieldType.id} value={fieldType.id}>
-                    {fieldType.name}
+              {field_types &&
+                field_types.map((field_type) => (
+                  <option key={field_type.id} value={field_type.id}>
+                    {field_type.name}
                   </option>
                 ))}
             </Form.Select>
@@ -224,17 +243,17 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
             </Form.Control>
             <div className="text-danger">{soilTypeError}</div>
           </Form.Group>
-          <Button variant="primary" type="submit">
-            Add Field
-          </Button>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" onClick={onHide}>
           Close
+        </Button>
+        <Button type="submit" variant="primary" onClick={handleSubmit}>
+          Save Changes
         </Button>
       </Modal.Footer>
     </Modal>
   );
 }
-export default AddFieldForm;
+export default UpdateFieldForm;
