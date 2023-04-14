@@ -73,20 +73,22 @@ function AvailableReservations() {
                             <td>{reservation.date}</td>
                             <td>{reservation.begin_time.slice(0, -3)}{' '}{reservation.end_time.slice(0, -3)}</td>
                             <td>
-                                {
-                                    (reservation.available_places > 0) ?
-                                        <Badge bg="primary" className="me-1">
-                                            {reservation.available_places}
-                                            {' '}Place{(reservation.available_places > 1) ? 's' : ''}
-                                        </Badge>
-                                        :
-                                        <Badge bg="danger" className="me-1">Full</Badge>
-                                }
-                                {
-                                    reservation.is_joined
-                                    &&
-                                    <Badge bg="success" className="mt-1 mt-md-0">Joined</Badge>
-                                }
+                                <div className="d-flex flex-wrap align-items-stretch gap-2">
+                                    {
+                                        (reservation.available_places > 0) ?
+                                            <Badge bg="primary">
+                                                {reservation.available_places}
+                                                {' '}Place{(reservation.available_places > 1) ? 's' : ''}
+                                            </Badge>
+                                            :
+                                            <Badge bg="danger">Full</Badge>
+                                    }
+                                    {
+                                        reservation.is_joined
+                                        &&
+                                        <Badge bg="success">Joined</Badge>
+                                    }
+                                </div>
                             </td>
                             <td>
                                 {
