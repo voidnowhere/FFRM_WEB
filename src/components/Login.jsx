@@ -23,6 +23,7 @@ export default function Login() {
         }).then((response) => {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
+            localStorage.setItem('user_type', response.data.type);
             dispatch(userLogin({'userType': response.data.type}));
             setEmail('');
             setPassword('');

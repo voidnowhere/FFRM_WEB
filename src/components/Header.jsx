@@ -7,9 +7,11 @@ import {userLogout} from "../features/user/userSlice.js";
 
 export default function Header() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+    const isPlayer = useSelector(state => state.user.isPlayer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
+    const isReservations = Boolean(useMatch('/reservations/available'));
 
     function logout() {
         axiosInstance.post('api/token/blacklist/', {
@@ -17,6 +19,7 @@ export default function Header() {
         });
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user_type');
         dispatch(userLogout());
         Notify.success('Successful logout', {
             position: 'center-bottom',
@@ -32,6 +35,19 @@ export default function Header() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/" active={Boolean(useMatch('/'))}>Home</Nav.Link>
+                        {
+                            isAuthenticated
+                            &&
+                            <NavDropdown title="Reservations" active={isReservations}>
+                                {
+                                    isPlayer
+                                    &&
+                                    <NavDropdown.Item as={Link} to="/reservations/available"
+                                                      active={Boolean(useMatch('/reservations/available'))}
+                                    >Available</NavDropdown.Item>
+                                }
+                            </NavDropdown>
+                        }
                     </Nav>
                     <Nav>
                         {isAuthenticated ?

@@ -6,9 +6,11 @@ import Login from "./components/Login.jsx";
 import ProfileInformation from "./components/ProfileInformation.jsx";
 import UpdatePassword from "./components/UpdatePassword.jsx";
 import {useSelector} from "react-redux";
+import AvailableReservations from "./components/AvailableReservations.jsx";
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+    const isPlayer = useSelector(state => state.user.isPlayer);
 
     return (
         <BrowserRouter>
@@ -19,6 +21,10 @@ export default function App() {
                 <Route path="/profile" element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
                 <Route path="/update-password"
                        element={(!isAuthenticated) ? <Navigate to="/login"/> : <UpdatePassword/>}/>
+                <Route path="/reservations/available" element={(!isAuthenticated) ?
+                    <Navigate to="/"/> :
+                    (!isPlayer) ? <Navigate to="/"/> : <AvailableReservations/>
+                }/>
             </Routes>
         </BrowserRouter>
     )
