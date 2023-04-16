@@ -16,7 +16,7 @@ export default function Header() {
             refresh: localStorage.getItem('refresh_token')
         });
         localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('refresh    _token');
         dispatch(userLogout());
         Notify.success('Successful logout', {
             position: 'center-bottom',
@@ -32,6 +32,7 @@ export default function Header() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/" active={Boolean(useMatch('/'))}>Home</Nav.Link>
+                        <Nav.Link as={Link} to="/reservations" >Reservations</Nav.Link>
                     </Nav>
                     <Nav>
                         {isAuthenticated ?
