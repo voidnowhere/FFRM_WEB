@@ -66,7 +66,7 @@ export default function CheckoutForm(props) {
                 'Okay',
                 {backOverlay: false}
             );
-            props.setReservations((reservations) => reservations.map(reservation => {
+            props.setReservations((prevState) => prevState.map(reservation => {
                 if (reservation.id === props.currentReservationId) {
                     reservation.is_paid = true;
                 }
