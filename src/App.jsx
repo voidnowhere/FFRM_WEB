@@ -7,6 +7,7 @@ import ProfileInformation from "./components/ProfileInformation.jsx";
 import UpdatePassword from "./components/UpdatePassword.jsx";
 import {useSelector} from "react-redux";
 import AvailableReservations from "./components/AvailableReservations.jsx";
+import TempReservations from "./components/TempReservations.jsx";
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -21,9 +22,10 @@ export default function App() {
                 <Route path="/profile" element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
                 <Route path="/update-password"
                        element={(!isAuthenticated) ? <Navigate to="/login"/> : <UpdatePassword/>}/>
-                <Route path="/reservations/available" element={(!isAuthenticated) ?
-                    <Navigate to="/"/> :
-                    (!isPlayer) ? <Navigate to="/"/> : <AvailableReservations/>
+                <Route path="/reservations/available" element={(!isAuthenticated && !isPlayer) ?
+                    <Navigate to="/"/> : <AvailableReservations/>}/>
+                <Route path="/temp-reservations" element={(!isAuthenticated && !isPlayer) ?
+                    <Navigate to="/"/> : <TempReservations/>
                 }/>
             </Routes>
         </BrowserRouter>

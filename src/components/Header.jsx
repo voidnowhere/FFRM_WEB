@@ -11,7 +11,7 @@ export default function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
-    const isReservations = Boolean(useMatch('/reservations/available'));
+    const isReservations = Boolean(useMatch('/temp-reservations')) || Boolean(useMatch('/reservations/available'));
 
     function logout() {
         axiosInstance.post('api/token/blacklist/', {
@@ -42,9 +42,14 @@ export default function Header() {
                                 {
                                     isPlayer
                                     &&
-                                    <NavDropdown.Item as={Link} to="/reservations/available"
-                                                      active={Boolean(useMatch('/reservations/available'))}
-                                    >Available</NavDropdown.Item>
+                                    <>
+                                        <NavDropdown.Item as={Link} to="/temp-reservations"
+                                                          active={Boolean(useMatch('/temp-reservations'))}
+                                        >Temp reservations</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/reservations/available"
+                                                          active={Boolean(useMatch('/reservations/available'))}
+                                        >Available</NavDropdown.Item>
+                                    </>
                                 }
                             </NavDropdown>
                         }
