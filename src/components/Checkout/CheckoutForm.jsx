@@ -3,6 +3,7 @@ import {PaymentElement, useElements, useStripe} from "@stripe/react-stripe-js";
 import './CheckoutForm.css';
 import {Spinner} from "react-bootstrap";
 import {Report} from 'notiflix/build/notiflix-report-aio';
+import axiosInstance from "../../axiosInstance.js";
 
 export default function CheckoutForm(props) {
     const stripe = useStripe();
@@ -54,40 +55,44 @@ export default function CheckoutForm(props) {
 
         setIsLoading(true);
 
-        const {error} = await stripe.confirmPayment({
-            elements,
-            redirect: 'if_required',
-        });
+        axiosInstance.get(`api/temp_reservations/${props.currentReservationId}/payment/can-pay`).then(async () => {
+            const {error} = await stripe.confirmPayment({
+                elements,
+                redirect: 'if_required',
+            });
 
-        if (error === undefined) {
-            Report.success(
-                'Success',
-                'Payment succeeded!',
+            if (error === undefined) {
+                Report.success(
+                    'Success',
+                    'Your payment is being processed come back later!',
+                    'Okay',
+                    {backOverlay: false}
+                );
+                props.setShowPaymentModal(false);
+                return;
+            }
+
+            // This point will only be reached if there is an immediate error when
+            // confirming the payment. Otherwise, your customer will be redirected to
+            // your `return_url`. For some payment methods like iDEAL, your customer will
+            // be redirected to an intermediate site first to authorize the payment, then
+            // redirected to the `return_url`.
+            if (error.type === "card_error" || error.type === "validation_error") {
+                setMessage(error.message);
+            } else {
+                setMessage("An unexpected error occurred.");
+            }
+
+            setIsLoading(false);
+        }).catch(error => {
+            props.setShowPaymentModal(false);
+            Report.failure(
+                'Failure',
+                error.response.data.message,
                 'Okay',
                 {backOverlay: false}
             );
-            props.setReservations((prevState) => prevState.map(reservation => {
-                if (reservation.id === props.currentReservationId) {
-                    reservation.is_paid = true;
-                }
-                return reservation;
-            }));
-            props.setShowPaymentModal(false);
-            return;
-        }
-
-        // This point will only be reached if there is an immediate error when
-        // confirming the payment. Otherwise, your customer will be redirected to
-        // your `return_url`. For some payment methods like iDEAL, your customer will
-        // be redirected to an intermediate site first to authorize the payment, then
-        // redirected to the `return_url`.
-        if (error.type === "card_error" || error.type === "validation_error") {
-            setMessage(error.message);
-        } else {
-            setMessage("An unexpected error occurred.");
-        }
-
-        setIsLoading(false);
+        });
     };
 
     const paymentElementOptions = {
