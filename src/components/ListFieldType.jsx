@@ -5,6 +5,9 @@ import Button from "react-bootstrap/Button";
 import { Form } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
+import Header from "./Header.jsx";
+import { Container } from "reactstrap";
+import { Confirm } from "notiflix";
 
 export default function ListFieldType(props) {
   const [data, setData] = useState([]);
@@ -68,7 +71,7 @@ export default function ListFieldType(props) {
   const handlePut = (event) => {
     event.preventDefault();
     axiosInstance
-      .put("api/field_types/" + id+"/", {
+      .put("api/field_types/" + id + "/", {
         name: name,
         max: max,
         priceHour: priceHour,
@@ -89,158 +92,173 @@ export default function ListFieldType(props) {
     setPriceHour("");
   };
 
-  const handleDelete = (event) => {
-    setId(event.target.value);
-    axiosInstance.delete("api/field_types/" + id).then(() => {
-      Notify.success("successfully deleted ", {
-        position: "center-bottom",
-      });
+  const handleDelete = (id) => {
+    Confirm.show(
+      "Confirm",
+      "Do you want to delete this field type?",
+      "Yes",
+      "No",
+      () => {
+        axiosInstance.delete("api/field_types/" + id + "/").then(() => {
+          Notify.success("successfully deleted ", {
+            position: "center-bottom",
+          });
 
-      axiosInstance.get("api/field_types/").then((response) => {
-        setData(response.data);
-      });
-    });
+          axiosInstance.get("api/field_types/").then((response) => {
+            setData(response.data);
+          });
+        });
+      }
+    );
   };
 
   return (
-    <div className="Container">
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Max</th>
-            <th>Price Hour</th>
-            <th>
-              <Button variant="primary" onClick={handleShowPost}>
-                Add
-              </Button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((data, i) => (
-            <tr key={i}>
-              <td>{data.id}</td>
-              <td>{data.name}</td>
-              <td>{data.max}</td>
-              <td>{data.priceHour}</td>
-              <td>
-                <Button
-                  value={data.id}
-                  variant="success"
-                  onClick={handleShowEdit}
-                >
+    <>
+      <Header />
+      <Container className="mt-5">
+        <h3>Field types</h3>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Max</th>
+              <th>Price Hour</th>
+              <th>
+                <Button variant="primary" size="sm" onClick={handleShowPost}>
+                  Add
+                </Button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((data, i) => (
+              <tr key={i}>
+                <td>{data.name}</td>
+                <td>{data.max}</td>
+                <td>{data.priceHour}</td>
+                <td>
+                  <Button
+                    value={data.id}
+                    size="sm"
+                    variant="success"
+                    onClick={handleShowEdit}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    className="ms-2"
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleDelete(data.id)}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+
+        <Modal show={showPost} onHide={handleClosePost}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add FootBall Field Type</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form method="POST" onSubmit={handleSubmit}>
+              <Form.Group className="mb-3">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  id="inputNAME"
+                  type="text"
+                  placeholder="NAME"
+                  value={name}
+                  onChange={(e) => setName(event.target.value)}
+                  autoFocus
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Max</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="MAX"
+                  value={max}
+                  onChange={(e) => setMax(event.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Price</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="PRICE Hour"
+                  value={priceHour}
+                  onChange={(e) => setPriceHour(event.target.value)}
+                />
+              </Form.Group>
+
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClosePost}>
+                  Cancel
+                </Button>
+                <Button variant="primary" type="submit">
+                  Add
+                </Button>
+              </Modal.Footer>
+            </Form>
+          </Modal.Body>
+        </Modal>
+
+        <Modal show={showEdit} onHide={handleCloseEdit}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit FootBall Field Type</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form method="PUT" onSubmit={handlePut}>
+              <Form.Group className="mb-3">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="NAME"
+                  value={name}
+                  onChange={(e) => setName(event.target.value)}
+                  autoFocus
+                  id="inputNameEdit"
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Max</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="MAX"
+                  value={max}
+                  onChange={(e) => setMax(event.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Price</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="PRICE Hour"
+                  value={priceHour}
+                  onChange={(e) => setPriceHour(event.target.value)}
+                />
+              </Form.Group>
+
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseEdit}>
+                  Cancel
+                </Button>
+                <Button variant="primary" type="submit">
                   Edit
                 </Button>
-                <Button variant="danger" value={data.id} onClick={handleDelete}>
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      <Modal show={showPost} onHide={handleClosePost}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add FootBall Field Type</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form method="POST" onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                id="inputNAME"
-                type="text"
-                placeholder="NAME"
-                value={name}
-                onChange={(e) => setName(event.target.value)}
-                autoFocus
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-              <Form.Label>Max</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="MAX"
-                value={max}
-                onChange={(e) => setMax(event.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="PRICE Hour"
-                value={priceHour}
-                onChange={(e) => setPriceHour(event.target.value)}
-              />
-            </Form.Group>
-
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClosePost}>
-                Cancel
-              </Button>
-              <Button variant="primary" type="submit">
-                Add
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
-      <Modal show={showEdit} onHide={handleCloseEdit}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit FootBall Field Type</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form method="PUT" onSubmit={handlePut}>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="NAME"
-                value={name}
-                onChange={(e) => setName(event.target.value)}
-                autoFocus
-                id="inputNameEdit"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-              <Form.Label>Max</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="MAX"
-                value={max}
-                onChange={(e) => setMax(event.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="PRICE Hour"
-                value={priceHour}
-                onChange={(e) => setPriceHour(event.target.value)}
-              />
-            </Form.Group>
-
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseEdit}>
-                Cancel
-              </Button>
-              <Button variant="primary" type="submit">
-                Edit
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal.Body>
-      </Modal>
-    </div>
+              </Modal.Footer>
+            </Form>
+          </Modal.Body>
+        </Modal>
+      </Container>
+    </>
   );
 }
