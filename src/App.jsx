@@ -8,10 +8,12 @@ import UpdatePassword from "./components/UpdatePassword.jsx";
 import {useSelector} from "react-redux";
 import AvailableReservations from "./components/AvailableReservations.jsx";
 import TempReservations from "./components/TempReservations.jsx";
+import ListFieldType from "./components/ListFieldType.jsx";
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
     const isPlayer = useSelector(state => state.user.isPlayer);
+    const isOwner = useSelector(state => state.user.isOwner);
 
     return (
         <BrowserRouter>
@@ -27,6 +29,8 @@ export default function App() {
                 <Route path="/temp-reservations" element={(!isAuthenticated && !isPlayer) ?
                     <Navigate to="/"/> : <TempReservations/>
                 }/>
+                <Route path="/filed-types" element={(!isAuthenticated && !isOwner) ?
+                    <Navigate to="/"/> : <ListFieldType/>}/>
             </Routes>
         </BrowserRouter>
     )
