@@ -1,12 +1,11 @@
 import Table from "react-bootstrap/Table";
 import axiosInstance from "../axiosInstance.js";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
-import { Container, Form } from "react-bootstrap";
-import { Modal } from "react-bootstrap";
-import { Notify } from "notiflix/build/notiflix-notify-aio";
+import {Container, Form, Modal} from "react-bootstrap";
+import {Notify} from "notiflix/build/notiflix-notify-aio";
 import Header from "./Header.jsx";
-import { Confirm } from "notiflix";
+import {Confirm} from "notiflix";
 
 export default function ListFieldType(props) {
   const [data, setData] = useState([]);
