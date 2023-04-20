@@ -193,7 +193,7 @@ export default function Fields() {
           <td>{field?.latitude}</td>
           <td>{field?.longitude}</td>
           <td>{field?.description}</td>
-          <td>{getFieldType(field?.field_type)}</td>
+          <td>{getFieldType(field?.type)}</td>
           <td>{getFieldZone(field?.zone)}</td>
 
           <td>{field.soil_type}</td>

@@ -20,7 +20,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [description, setDescription] = useState("");
-  const [field_type, setField_type] = useState("");
+  const [type, setType] = useState("");
   const [is_active, setIs_active] = useState(false);
   const [soilType, setSoilType] = useState("");
   const [zone, setZone] = useState("");
@@ -44,7 +44,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
       latitude: latitude,
       longitude: longitude,
       description: description,
-      field_type: field_type,
+      type: type,
       is_active: is_active,
       zone: zone,
       soil_type: soilType,
@@ -67,7 +67,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
         setLatitude("");
         setLongitude("");
         setDescription("");
-        setField_type("");
+        setType("");
         setIs_active(false);
         setZone("");
         setCityId('');
@@ -83,7 +83,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
         setDescriptionError(errors.description);
         setSoilTypeError(errors.soil_type);
         setZoneError(errors.zone);
-        setTypeError(errors.field_type);
+        setTypeError(errors.type);
         Notify.failure("Failed to add field.");
       });
   };
@@ -198,8 +198,8 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
             <Form.Label>fieldType</Form.Label>
             <Form.Select
               id="fieldTypeId"
-              value={field_type}
-              onChange={(e) => setField_type(e.target.value)}
+              value={type}
+              onChange={(e) => setType(e.target.value)}
             >
               <option>--Select a type--</option>
               {fieldTypes &&

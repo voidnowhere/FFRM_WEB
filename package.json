@@ -1,10 +1,8 @@
 {
   "name": "ffrm-web",
   "private": true,
- 
   "version": "0.0.0",
   "type": "module",
- 
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -21,7 +19,8 @@
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.9.0"
+    "react-router-dom": "^6.9.0",
+    "reactstrap": "^9.1.9"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
