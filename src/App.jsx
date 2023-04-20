@@ -9,6 +9,7 @@ import {useSelector} from "react-redux";
 import AvailableReservations from "./components/AvailableReservations.jsx";
 import TempReservations from "./components/TempReservations.jsx";
 import ListFieldType from "./components/ListFieldType.jsx";
+import {Analytics} from '@vercel/analytics/react';
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -16,22 +17,26 @@ export default function App() {
     const isOwner = useSelector(state => state.user.isOwner);
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="/login" element={(isAuthenticated) ? <Navigate to="/"/> : <Login/>}/>
-                <Route path="/register" element={(isAuthenticated) ? <Navigate to="/"/> : <Register/>}/>
-                <Route path="/profile" element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
-                <Route path="/update-password"
-                       element={(!isAuthenticated) ? <Navigate to="/login"/> : <UpdatePassword/>}/>
-                <Route path="/reservations/available" element={(!isAuthenticated && !isPlayer) ?
-                    <Navigate to="/"/> : <AvailableReservations/>}/>
-                <Route path="/temp-reservations" element={(!isAuthenticated && !isPlayer) ?
-                    <Navigate to="/"/> : <TempReservations/>
-                }/>
-                <Route path="/filed-types" element={(!isAuthenticated && !isOwner) ?
-                    <Navigate to="/"/> : <ListFieldType/>}/>
-            </Routes>
-        </BrowserRouter>
+        <>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/login" element={(isAuthenticated) ? <Navigate to="/"/> : <Login/>}/>
+                    <Route path="/register" element={(isAuthenticated) ? <Navigate to="/"/> : <Register/>}/>
+                    <Route path="/profile"
+                           element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
+                    <Route path="/update-password"
+                           element={(!isAuthenticated) ? <Navigate to="/login"/> : <UpdatePassword/>}/>
+                    <Route path="/reservations/available" element={(!isAuthenticated && !isPlayer) ?
+                        <Navigate to="/"/> : <AvailableReservations/>}/>
+                    <Route path="/temp-reservations" element={(!isAuthenticated && !isPlayer) ?
+                        <Navigate to="/"/> : <TempReservations/>
+                    }/>
+                    <Route path="/filed-types" element={(!isAuthenticated && !isOwner) ?
+                        <Navigate to="/"/> : <ListFieldType/>}/>
+                </Routes>
+            </BrowserRouter>
+            <Analytics/>
+        </>
     )
 }
