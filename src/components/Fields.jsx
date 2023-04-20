@@ -14,7 +14,10 @@ export default function Fields() {
   const [editedField, setEditedField] = useState(null);
   const [fieldTypes, setFieldTypes] = useState(null);
   const [zones, setZones] = useState([]);
- 
+  const [searchInput, setSearchInput] = useState("");
+  const [searchSelect, setSearchSelect] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
+
   const [cities, setCities] = useState([]);
 
   const soilTypeOptions = [
@@ -36,7 +39,7 @@ export default function Fields() {
 
   useEffect(() => {
     axiosInstance
-      .get("api/fields/zones/")
+      .get("api/zones/")
       .then((responseZones) => {
         setZones(responseZones.data);
       })
@@ -52,7 +55,7 @@ export default function Fields() {
 
   useEffect(() => {
     axiosInstance
-      .get("api/fields/cities/")
+      .get("api/cities/")
       .then((responseCities) => {
         setCities(responseCities.data);
       })
@@ -67,7 +70,7 @@ export default function Fields() {
 
   useEffect(() => {
     axiosInstance
-      .get("api/fields/fieldtypes/")
+      .get("api/field_types/")
       .then((responseFieldTypes) => {
         setFieldTypes(responseFieldTypes.data);
       })
@@ -81,7 +84,7 @@ export default function Fields() {
   }, [fieldTypes]);
 
   /* useEffect(() => {
-    axiosInstance.get("api/fields/zones/").then((responseZones) => {
+    axiosInstance.get("api/zones/").then((responseZones) => {
       setZones(responseZones.data);
       axiosInstance
         .get(`api/fields/${responseZones.data[0].id}/`)
@@ -158,10 +161,7 @@ export default function Fields() {
     setFields(updatedfields);
   };
 
-  const [searchInput, setSearchInput] = useState("");
-  const [searchSelect, setSearchSelect] = useState("");
-  const [filteredResults, setFilteredResults] = useState([]);
-
+  
   const searchItems = (searchValue) => {
     setSearchInput(searchValue);
     const filterFunction = (field) => {

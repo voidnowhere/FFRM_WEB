@@ -40,7 +40,7 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
 
   useEffect(() => {
     const fetchFieldTypes = async () => {
-      const result = await axiosInstance.get("/api/fields/fieldtypes/");
+      const result = await axiosInstance.get("/api/field_types/");
       setField_types(result.data);
       // console.log(result.data);
     };
@@ -50,7 +50,7 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
   
   useEffect(() => {
     const fetchFieldTypes = async () => {
-      const result = await axiosInstance.get("/api/fields/zones/");
+      const result = await axiosInstance.get("/api/zones/");
       setZones(result.data);
       // console.log(result.data);
     };
@@ -59,7 +59,7 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
   
   useEffect(() => {
     const fetchCity = async () => {
-      const result = await axiosInstance.get(`/api/fields/zones/${updatedField?.zone}/city`);
+      const result = await axiosInstance.get(`/api/zones/${updatedField?.zone}/city`);
       setCityId(result.data.id);
       console.log(result.data);
     };
@@ -111,7 +111,7 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
   const handleCityChange = (e) => {
     const cityId = e.target.value;
     setCityId(cityId);
-    axiosInstance.get(`/api/fields/zones/city=${cityId}`)
+    axiosInstance.get(`/api/zones/city=${cityId}`)
         .then((response) => {
             setZones(response.data);
         });

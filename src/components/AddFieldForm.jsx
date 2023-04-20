@@ -92,7 +92,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
   const handleCityChange = (e) => {
     const cityId = e.target.value;
     setCityId(cityId);
-    axiosInstance.get(`/api/fields/zones/city=${cityId}`)
+    axiosInstance.get(`/api/zones/city=${cityId}`)
         .then((response) => {
             setZones(response.data);
         });

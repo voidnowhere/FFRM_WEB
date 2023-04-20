@@ -9,7 +9,7 @@ export default function FilterFields(props) {
 
   return (
     <div>
-      <FloatingLabel controlId="floatingSelect" label="Filter fields by zone">
+      <FloatingLabel controlId="floatingSelect" label="Filter fields">
         <Form.Select
           id="selectedZone"
           value={props.selectedZone}
