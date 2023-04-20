@@ -7,9 +7,12 @@ import {userLogout} from "../features/user/userSlice.js";
 
 export default function Header() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+    const isPlayer = useSelector(state => state.user.isPlayer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
+    const isReservations = Boolean(useMatch('/temp-reservations')) || Boolean(useMatch('/reservations/available'));
+    const isOwner = useSelector(state => state.user.isOwner);
 
     function logout() {
         axiosInstance.post('api/token/blacklist/', {
@@ -17,6 +20,7 @@ export default function Header() {
         });
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user_type');
         dispatch(userLogout());
         Notify.success('Successful logout', {
             position: 'center-bottom',
@@ -25,13 +29,36 @@ export default function Header() {
     }
 
     return (
-        <Navbar bg="light" expand="lg" className="shadow">
+        <Navbar bg="light" expand="lg" className="shadow" style={{display : "block"}}>
             <Container>
                 <Navbar.Brand>FFRM</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/" active={Boolean(useMatch('/'))}>Home</Nav.Link>
+                        {
+                            isAuthenticated && isOwner
+                            &&
+                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}>Filed types</Nav.Link>
+                        }
+                        {
+                            isAuthenticated
+                            &&
+                            <NavDropdown title="Reservations" active={isReservations}>
+                                {
+                                    isPlayer
+                                    &&
+                                    <>
+                                        <NavDropdown.Item as={Link} to="/temp-reservations"
+                                                          active={Boolean(useMatch('/temp-reservations'))}
+                                        >Temp reservations</NavDropdown.Item>
+                                        <NavDropdown.Item as={Link} to="/reservations/available"
+                                                          active={Boolean(useMatch('/reservations/available'))}
+                                        >Available</NavDropdown.Item>
+                                    </>
+                                }
+                            </NavDropdown>
+                        }
                     </Nav>
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/fields" active={Boolean(useMatch('/fields'))}>Fields</Nav.Link>
@@ -49,6 +76,7 @@ export default function Header() {
                                     >Update password</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link onClick={logout}>Logout</Nav.Link>
+                                
                             </>)
                             :
                             (<>

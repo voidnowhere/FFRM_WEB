@@ -3,9 +3,9 @@ import {createSlice} from '@reduxjs/toolkit'
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
-        isAuthenticated: false,
-        isPlayer: false,
-        isOwner: false,
+        isAuthenticated: localStorage.getItem('access_token') !== null,
+        isPlayer: localStorage.getItem('user_type') === 'P',
+        isOwner: localStorage.getItem('user_type') === 'O',
     },
     reducers: {
         userLogin: (state, action) => {
