@@ -100,7 +100,6 @@ export default function CheckoutForm(props) {
     }
 
     return (
-
         <form id="payment-form" onSubmit={handleSubmit}>
             <PaymentElement onReady={() => setIsElementsReady(true)} id="payment-element"
                             options={paymentElementOptions}/>

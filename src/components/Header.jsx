@@ -4,6 +4,7 @@ import {Notify} from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../axiosInstance.js";
 import {useDispatch, useSelector} from "react-redux";
 import {userLogout} from "../features/user/userSlice.js";
+import logo from '../assets/logo.png';
 
 export default function Header() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -29,9 +30,11 @@ export default function Header() {
     }
 
     return (
-        <Navbar bg="light" expand="lg" className="shadow" style={{display : "block"}}>
+        <Navbar bg="light" expand="lg" className="shadow" style={{display: "block"}}>
             <Container>
-                <Navbar.Brand>FFRM</Navbar.Brand>
+                <Navbar.Brand>
+                    <img src={logo} width="30" height="30" alt="Logo"/>
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
@@ -39,7 +42,8 @@ export default function Header() {
                         {
                             isAuthenticated && isOwner
                             &&
-                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}>Filed types</Nav.Link>
+                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}>Filed
+                                types</Nav.Link>
                         }
                         {
                             isAuthenticated
@@ -72,7 +76,7 @@ export default function Header() {
                                     >Update password</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link onClick={logout}>Logout</Nav.Link>
-                                
+
                             </>)
                             :
                             (<>

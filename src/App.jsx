@@ -1,6 +1,7 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Register from './components/Register.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import Home from "./components/Home.jsx";
 import Login from "./components/Login.jsx";
 import ProfileInformation from "./components/ProfileInformation.jsx";
