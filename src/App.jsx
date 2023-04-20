@@ -17,7 +17,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/reservations" element={<Reservations/>}/>
-                <Route path="/reservations/addreservation" element={<AddReservation/>}/>
+                <Route path="/booking" element={<AddReservation/>}/>
                 <Route path="/login" element={(isAuthenticated) ? <Navigate to="/"/> : <Login/>}/>
                 <Route path="/register" element={(isAuthenticated) ? <Navigate to="/"/> : <Register/>}/>
                 <Route path="/profile" element={(!isAuthenticated) ? <Navigate to="/login"/> : <ProfileInformation/>}/>
