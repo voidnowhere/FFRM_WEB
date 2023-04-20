@@ -21,7 +21,7 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
   const [longitude, setLongitude] = useState(updatedField?.longitude);
   const [description, setDescription] = useState(updatedField?.description);
   const [field_type, setField_type] = useState(updatedField?.field_type);
-  const [state, setState] = useState(updatedField?.state);
+  const [is_active, setIs_active] = useState(updatedField?.is_active);
 
   const [soilType, setSoilType] = useState(updatedField?.soil_type);
   const TYPE_CHOICES = ["naturelle", "synthetique"];
@@ -76,14 +76,17 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
       longitude: longitude,
       description: description,
       field_type: field_type,
-      state: state,
+      is_active: is_active,
       zone: zoneId,
       soil_type: soilType,
     };
     setUpdatedField(field);
     // console.log(field);
-    axiosInstance
-      .put(`/api/fields/update/${updatedField.id}/`, field)
+    axiosInstance({
+      method: 'put',
+      url: `/api/fields/${updatedField.id}/`,
+      data: field,
+    })
       .then((response) => {
         console.log(response);
 
@@ -168,12 +171,12 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
             <div className="text-danger">{descriptionError}</div>
           </Form.Group>
 
-          <Form.Group controlId="formState">
+          <Form.Group controlId="formIs_active">
             <Form.Check
               type="checkbox"
-              label="State"
-              checked={state}
-              onChange={(event) => setState(event.target.checked)}
+              label="is_active"
+              checked={is_active}
+              onChange={(event) => setIs_active(event.target.checked)}
             />
           </Form.Group>
 

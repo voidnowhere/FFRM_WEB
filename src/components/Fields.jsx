@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import Header from "./Header.jsx";
 import axiosInstance from "../axiosInstance.js";
 import AddFieldForm from "./AddFieldForm.jsx";
-import FilterFields from "./Filterfields.jsx";
 import { Confirm } from "notiflix/build/notiflix-confirm-aio";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import UpdateFieldForm from "./UpdateFieldForm.jsx";
 import Form from "react-bootstrap/Form";
-
+import { Container} from 'react-bootstrap';
 export default function Fields() {
   const [fields, setFields] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -100,9 +99,12 @@ export default function Fields() {
       "Abort",
       async () => {
         try {
-          const response = await axiosInstance.delete(
-            `/api/fields/delete/${fieldId}`
-          );
+
+          const response = await axiosInstance({
+            method: 'delete',
+            url: `/api/fields/${fieldId}`,
+        
+          })
 
           if (response.status === 200 || response.status === 204) {
             setFields(fields.filter((field) => field.id !== fieldId));
@@ -216,9 +218,9 @@ export default function Fields() {
   };
 
   return (
-    <>
+   <>
       <Header />
-
+      <Container>
       <div className="fields-container"></div>
 
       <h1>List of Fields</h1>
@@ -291,6 +293,7 @@ export default function Fields() {
           updateField={updateField}
         />
       )}
+    </Container>
     </>
   );
 }

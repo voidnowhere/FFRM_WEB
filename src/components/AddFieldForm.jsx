@@ -21,7 +21,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
   const [longitude, setLongitude] = useState("");
   const [description, setDescription] = useState("");
   const [field_type, setField_type] = useState("");
-  const [state, setState] = useState(false);
+  const [is_active, setIs_active] = useState(false);
   const [soilType, setSoilType] = useState("");
   const [zone, setZone] = useState("");
   const [cityId, setCityId] = useState("");
@@ -45,14 +45,17 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
       longitude: longitude,
       description: description,
       field_type: field_type,
-      state: state,
+      is_active: is_active,
       zone: zone,
       soil_type: soilType,
     };
 
     console.log(field);
-    axiosInstance
-      .post("/api/fields/add/", field)
+    axiosInstance({
+      method: 'post',
+      url: `/api/fields/`,
+      data: field,
+    })
       .then((response) => {
         console.log(response);
         Notify.success("Field added successfully.");
@@ -65,7 +68,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
         setLongitude("");
         setDescription("");
         setField_type("");
-        setState(false);
+        setIs_active(false);
         setZone("");
         setCityId('');
         setSoilType("");
@@ -151,9 +154,9 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
           <Form.Group controlId="formState">
             <Form.Check
               type="checkbox"
-              label="State"
-              checked={state}
-              onChange={(event) => setState(event.target.checked)}
+              label="is_active"
+              checked={is_active}
+              onChange={(event) => setIs_active(event.target.checked)}
             />
           </Form.Group>
 
