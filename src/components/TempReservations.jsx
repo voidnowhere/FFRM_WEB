@@ -22,7 +22,9 @@ import jwt_decode from "jwt-decode";
 
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-const playerId = jwt_decode(localStorage.getItem('access_token')).user_id;
+if (localStorage.getItem('access_token')) {
+    const loggedInPlayerId = jwt_decode(localStorage.getItem('access_token')).user_id;
+}
 
 function TempReservations() {
     const [reservations, setReservations] = useState([]);
@@ -217,7 +219,7 @@ function TempReservations() {
                             reservationPlayers.length > 0
                             &&
                             <ListGroup>
-                                {reservationPlayers.filter((player) => player.id === playerId).map((player) => (
+                                {reservationPlayers.filter((player) => player.id === loggedInPlayerId).map((player) => (
                                     <ListGroup.Item key={player.id} active>
                                         <OverlayTrigger placement="top" delay={{show: 250, hide: 400}}
                                                         overlay={<Tooltip>{player.email}</Tooltip>}>
@@ -225,7 +227,7 @@ function TempReservations() {
                                         </OverlayTrigger>
                                     </ListGroup.Item>
                                 ))}
-                                {reservationPlayers.filter((player) => player.id !== playerId).map((player) => (
+                                {reservationPlayers.filter((player) => player.id !== loggedInPlayerId).map((player) => (
                                     <ListGroup.Item key={player.id}>
                                         <div
                                             className="d-flex justify-content-between align-items-center flex-grow-1 pe-2">
