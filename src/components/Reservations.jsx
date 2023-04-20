@@ -1,13 +1,12 @@
-import {Button, Container, Modal, Table} from "react-bootstrap";
+import {Button, Container, Table} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import axiosInstance from "../axiosInstance.js";
 import Header from "./Header.jsx";
+import {Confirm} from 'notiflix/build/notiflix-confirm-aio';
 
 
 function Reservations() {
     const [reservations, setReservations] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [reservationToDelete, setReservationToDelete] = useState(null)
 
     useEffect(() => {
         axiosInstance.get("reservations/").then((response) => {
@@ -16,23 +15,27 @@ function Reservations() {
     }, []);
 
     function deleteReservation(reservationId) {
-        setShowModal(false);
-        axiosInstance
-            .delete(`reservations/${reservationId}`)
-            .then((response) => {
-                // Remove the deleted reservation from the state
-                const updatedReservations = reservations.filter(
-                    (reservation) => reservation.id !== reservationId
-                );
-                setReservations(updatedReservations);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-    function confirmDeleteReservation(reservationId) {
-        setReservationToDelete(reservationId);
-        setShowModal(true);
+        Confirm.show(
+            'Notiflix Confirm',
+            'Do you agree with me?',
+            'Yes',
+            'No',
+            () => {
+                axiosInstance
+                    .delete(`reservations/${reservationId}`)
+                    .then(() => {
+                        // Remove the deleted reservation from the state
+                        const updatedReservations = reservations.filter(
+                            (reservation) => reservation.id !== reservationId
+                        );
+                        setReservations(updatedReservations);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+        )
+
     }
 
     function updateReservation(id, data) {
@@ -53,18 +56,30 @@ function Reservations() {
                 console.log(error);
             });
     }
-    function handleCheckboxChange(reservationId, isChecked) {
-        const updatedReservations = reservations.map(reservation => {
-            if (reservation.id === reservationId) {
-                return {
-                    ...reservation,
-                    is_public: isChecked
-                };
-            }
-            return reservation;
-        });
-        setReservations(updatedReservations);
-        updateReservation(reservationId, { is_public: isChecked });
+
+    function handleCheckboxChange(event, reservationId, isChecked) {
+        Confirm.show(
+            'Notiflix Confirm',
+            'Do you agree with me?',
+            'Yes',
+            'No',
+            () => {
+                const updatedReservations = reservations.map(reservation => {
+                    if (reservation.id === reservationId) {
+                        return {
+                            ...reservation,
+                            is_public: isChecked
+                        };
+                    }
+                    return reservation;
+                });
+                setReservations(updatedReservations);
+                updateReservation(reservationId, {is_public: isChecked});
+            },
+            () => {
+                event.target.checked = false;
+            },
+        )
     }
 
     return (
@@ -91,7 +106,7 @@ function Reservations() {
                                 <input
                                     type="checkbox"
                                     defaultChecked={reservation.is_public}
-                                    onChange={(event) => handleCheckboxChange(reservation.id, event.target.checked)}
+                                    onChange={(event) => handleCheckboxChange(event, reservation.id, event.target.checked)}
                                 />
                             </td>
                             <td>{reservation.price}</td>
@@ -99,7 +114,7 @@ function Reservations() {
                             <td>
                                 <Button
                                     className="btn btn-danger"
-                                    onClick={() => confirmDeleteReservation(reservation.id)}
+                                    onClick={() => deleteReservation(reservation.id)}
                                 >
                                     Delete
                                 </Button>
@@ -110,20 +125,6 @@ function Reservations() {
                     </tbody>
 
                 </Table>
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm deletion</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Are you sure you want to delete this reservation?</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowModal(false)}>
-                            Cancel
-                        </Button>
-                        <Button variant="danger" onClick={() => deleteReservation(reservationToDelete)}>
-                            Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </Container>
         </>
     );
