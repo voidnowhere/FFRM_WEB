@@ -9,7 +9,7 @@ import {useSelector} from "react-redux";
 import AvailableReservations from "./components/AvailableReservations.jsx";
 import TempReservations from "./components/TempReservations.jsx";
 import ListFieldType from "./components/ListFieldType.jsx";
-import Fields from "./components/Fields.jsx";
+import Fields from "./components/Field/Fields.jsx";
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);

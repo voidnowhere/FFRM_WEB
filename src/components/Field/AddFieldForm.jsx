@@ -1,8 +1,8 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
-
+import Map from "./Map";
 Notify.init({
   position: "center-top", // Notification position
   distance: "10px", // Distance between notifications
@@ -14,7 +14,14 @@ Notify.init({
 });
 const TYPE_CHOICES = ["naturelle", "synthetique"];
 
-function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
+function AddFieldForm({
+  onAddField,
+  fieldTypes,
+  show,
+  cities,
+  handleClose,
+  currentLocation,
+}) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -26,15 +33,13 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
   const [zone, setZone] = useState("");
   const [cityId, setCityId] = useState("");
   const [zones, setZones] = useState([]);
-  
+  const [showMap, setShowMap] = useState(false);
   const [nameError, setNameError] = useState([]);
   const [addressError, setAddressError] = useState([]);
   const [descriptionError, setDescriptionError] = useState([]);
   const [zoneError, setZoneError] = useState([]);
   const [typeError, setTypeError] = useState([]);
   const [soilTypeError, setSoilTypeError] = useState([]);
-
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -52,7 +57,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
 
     console.log(field);
     axiosInstance({
-      method: 'post',
+      method: "post",
       url: `/api/fields/`,
       data: field,
     })
@@ -60,7 +65,7 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
         console.log(response);
         Notify.success("Field added successfully.");
         // Reset the form fields
-         // Call the onAddField callback function to refresh the list of fields
+        // Call the onAddField callback function to refresh the list of fields
         onAddField(field);
         setName("");
         setAddress("");
@@ -70,10 +75,9 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
         setType("");
         setIs_active(false);
         setZone("");
-        setCityId('');
+        setCityId("");
         setSoilType("");
 
-        
       })
       .catch((error) => {
         const errors = error.response.data;
@@ -88,15 +92,21 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
       });
   };
 
-
   const handleCityChange = (e) => {
     const cityId = e.target.value;
     setCityId(cityId);
-    axiosInstance.get(`/api/zones/city=${cityId}`)
-        .then((response) => {
-            setZones(response.data);
-        });
-};
+    axiosInstance.get(`/api/zones/city=${cityId}`).then((response) => {
+      setZones(response.data);
+    });
+  };
+
+  const handleShowMapChange = (e) => {
+    setShowMap(e.target.checked);
+  };
+  const handleCoordsSelected = (coords) => {
+    setLatitude(coords[0]);
+    setLongitude(coords[1]);
+  };
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -160,7 +170,6 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
             />
           </Form.Group>
 
-
           <Form.Group controlId="formZone">
             <Form.Label>City</Form.Label>
             <Form.Control
@@ -176,7 +185,6 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
               ))}
             </Form.Control>
           </Form.Group>
-
 
           <Form.Group controlId="formZone">
             <Form.Label>Zone</Form.Label>
@@ -227,6 +235,12 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
             </Form.Control>
             <div className="text-danger">{soilTypeError}</div>
           </Form.Group>
+          <Form.Check
+            type="checkbox"
+            label="Show Map"
+            checked={showMap}
+            onChange={handleShowMapChange}
+          />
           <Button variant="primary" type="submit">
             Add Field
           </Button>
@@ -236,6 +250,34 @@ function AddFieldForm({ onAddField ,fieldTypes, show,cities,handleClose }) {
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
+
+        {showMap && (
+          <Modal  size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+            show={showMap}
+            hide={() => {
+              setShowMap(false);
+            }}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Choose location on Map</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Map onSelect={handleCoordsSelected} center={currentLocation} />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowMap(false);
+                }}
+              >
+                Back
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
       </Modal.Footer>
     </Modal>
   );
