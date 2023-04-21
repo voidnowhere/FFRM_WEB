@@ -16,8 +16,8 @@ function Reservations() {
 
     function deleteReservation(reservationId) {
         Confirm.show(
-            'Notiflix Confirm',
-            'Do you agree with me?',
+            'Confirmation',
+            'Do you want to delete this reservation ?',
             'Yes',
             'No',
             () => {
@@ -59,8 +59,8 @@ function Reservations() {
 
     function handleCheckboxChange(event, reservationId, isChecked) {
         Confirm.show(
-            'Notiflix Confirm',
-            'Do you agree with me?',
+            'Confirm',
+            'Do you want to make this reservation Public ?',
             'Yes',
             'No',
             () => {
