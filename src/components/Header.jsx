@@ -46,6 +46,11 @@ export default function Header() {
                                 types</Nav.Link>
                         }
                         {
+                            isAuthenticated && isPlayer
+                            &&
+                            <Nav.Link as={Link} to="/booking" active={Boolean(useMatch('/booking'))}>Booking</Nav.Link>
+                        }
+                        {
                             isAuthenticated
                             &&
                             <NavDropdown title="Reservations" active={isReservations}>
@@ -53,6 +58,7 @@ export default function Header() {
                                     isPlayer
                                     &&
                                     <>
+                                        <Nav.Link as={Link} to="/reservations" active={Boolean(useMatch('/reservations'))} >Reservations</Nav.Link>
                                         <NavDropdown.Item as={Link} to="/temp-reservations"
                                                           active={Boolean(useMatch('/temp-reservations'))}
                                         >Temp reservations</NavDropdown.Item>
@@ -76,7 +82,6 @@ export default function Header() {
                                     >Update password</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link onClick={logout}>Logout</Nav.Link>
-
                             </>)
                             :
                             (<>

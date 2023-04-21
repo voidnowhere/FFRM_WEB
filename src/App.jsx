@@ -11,6 +11,8 @@ import AvailableReservations from "./components/AvailableReservations.jsx";
 import TempReservations from "./components/TempReservations.jsx";
 import ListFieldType from "./components/ListFieldType.jsx";
 import {Analytics} from '@vercel/analytics/react';
+import Reservations from "./components/Reservations.jsx";
+import AddReservation from "./components/AddReservation.jsx";
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -35,6 +37,8 @@ export default function App() {
                     }/>
                     <Route path="/filed-types" element={(!isAuthenticated && !isOwner) ?
                         <Navigate to="/"/> : <ListFieldType/>}/>
+                    <Route path="/reservations" element={<Reservations/>}/>
+                    <Route path="/booking" element={<AddReservation/>}/>
                 </Routes>
             </BrowserRouter>
             <Analytics/>
