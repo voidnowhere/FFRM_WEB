@@ -12,7 +12,7 @@ export default function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
-    const isReservations = Boolean(useMatch('/temp-reservations')) || Boolean(useMatch('/reservations/available'));
+    const isReservations = Boolean(useMatch('/reservations')) || Boolean(useMatch('/reservations/available'));
     const isOwner = useSelector(state => state.user.isOwner);
 
     function logout() {
@@ -40,33 +40,26 @@ export default function Header() {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/" active={Boolean(useMatch('/'))}>Home</Nav.Link>
                         {
-                            isAuthenticated && isOwner
-                            &&
-                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}>Filed
-                                types</Nav.Link>
-                        }
-                        {
-                            isAuthenticated && isPlayer
+                            !isOwner
                             &&
                             <Nav.Link as={Link} to="/booking" active={Boolean(useMatch('/booking'))}>Booking</Nav.Link>
                         }
                         {
-                            isAuthenticated
+                            isAuthenticated && isOwner
+                            &&
+                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}
+                            >Filed types</Nav.Link>
+                        }
+                        {
+                            isAuthenticated && isPlayer
                             &&
                             <NavDropdown title="Reservations" active={isReservations}>
-                                {
-                                    isPlayer
-                                    &&
-                                    <>
-                                        <Nav.Link as={Link} to="/reservations" active={Boolean(useMatch('/reservations'))} >Reservations</Nav.Link>
-                                        <NavDropdown.Item as={Link} to="/temp-reservations"
-                                                          active={Boolean(useMatch('/temp-reservations'))}
-                                        >Temp reservations</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/reservations/available"
-                                                          active={Boolean(useMatch('/reservations/available'))}
-                                        >Available</NavDropdown.Item>
-                                    </>
-                                }
+                                <NavDropdown.Item as={Link} to="/reservations"
+                                                  active={Boolean(useMatch('/reservations'))}
+                                >Reservations</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/reservations/available"
+                                                  active={Boolean(useMatch('/reservations/available'))}
+                                >Available</NavDropdown.Item>
                             </NavDropdown>
                         }
                     </Nav>

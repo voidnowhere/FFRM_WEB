@@ -1,14 +1,13 @@
 import {Button, Card, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import axiosInstance from "../axiosInstance.js";
-import img from './images/field.jpeg'
 import {Report} from 'notiflix/build/notiflix-report-aio';
 import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Header from "./Header.jsx";
 
 
-function AddReservation() {
+function Booking() {
     const [date, setDate] = useState("");
     const [beginTime, setBeginTime] = useState("");
     const [endTime, setEndTime] = useState("");
@@ -18,7 +17,7 @@ function AddReservation() {
 
 
     useEffect(() => {
-        axiosInstance.get("reservations/fields/").then((response) => {
+        axiosInstance.get("api/reservations/fields/").then((response) => {
             setFields(response.data);
         });
     }, []);
@@ -28,7 +27,7 @@ function AddReservation() {
         const beginDateTime = `${date}T${beginTime}:00Z`;
         const endDateTime = `${date}T${endTime}:00Z`;
 
-        axiosInstance.post("reservations/", {
+        axiosInstance.post("api/reservations/", {
             field: field.id,
             begin_date_time: beginDateTime,
             end_date_time: endDateTime,
@@ -98,22 +97,26 @@ function AddReservation() {
                 {/* code for cities */}
                 <br/>
                 <Row className="d-flex gap-4 justify-content-center">
-                    {fields.map((field) => (
-                        <Card key={field.id} style={{width: '18rem'}}>
-                            <Card.Img variant="top" src={img}/>
-                            <Card.Body>
-                                <Card.Title>{field.name}</Card.Title>
-                                <Card.Text>
-                                    {field.id}
-                                </Card.Text>
-                                <Button variant="primary" onClick={(e) => handleSubmit(e, field)}>Book</Button>
-                                <Button variant="secondary" onClick={() => {
-                                    setFieldLocation({latitude: field.latitude, longitude: field.longitude});
-                                    setShowMap(true);
-                                }}>Map</Button>
-                            </Card.Body>
-                        </Card>
-                    ))}
+                    {
+                        fields.length > 0
+                        &&
+                        fields.map((field) => (
+                            <Card key={field.id} style={{width: '18rem'}}>
+                                <Card.Img variant="top" src={field.image}/>
+                                <Card.Body>
+                                    <Card.Title>{field.name}</Card.Title>
+                                    <Card.Text>
+                                        {field.id}
+                                    </Card.Text>
+                                    <Button variant="primary" onClick={(e) => handleSubmit(e, field)}>Book</Button>
+                                    <Button variant="secondary" onClick={() => {
+                                        setFieldLocation({latitude: field.latitude, longitude: field.longitude});
+                                        setShowMap(true);
+                                    }}>Map</Button>
+                                </Card.Body>
+                            </Card>
+                        ))
+                    }
                 </Row>
                 {
                     fieldLocation
@@ -142,4 +145,4 @@ function AddReservation() {
     )
 }
 
-export default AddReservation;
+export default Booking;
