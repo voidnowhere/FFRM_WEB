@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header.jsx";
-import axiosInstance from "../axiosInstance.js";
+import Header from "../Header.jsx";
+import axiosInstance from "../../axiosInstance.js";
 import AddFieldForm from "./AddFieldForm.jsx";
 import { Confirm } from "notiflix/build/notiflix-confirm-aio";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
@@ -65,7 +65,7 @@ export default function Fields() {
   }, []);
 
   useEffect(() => {
-    console.log(cities);
+    //console.log(cities);
   }, [cities]);
 
   useEffect(() => {
@@ -120,7 +120,7 @@ export default function Fields() {
         }
       },
       () => {
-        console.log("If you say so...");
+      //  console.log("If you say so...");
       },
       {}
     );
@@ -187,7 +187,6 @@ export default function Fields() {
     return (
       <tbody>
         <tr key={field?.id}>
-          <td>{field?.id}</td>
           <td>{field?.name}</td>
           <td>{field?.address}</td>
           <td>{field?.latitude}</td>
@@ -195,7 +194,6 @@ export default function Fields() {
           <td>{field?.description}</td>
           <td>{getFieldType(field?.type)}</td>
           <td>{getFieldZone(field?.zone)}</td>
-
           <td>{field.soil_type}</td>
 
           <td>
@@ -260,7 +258,6 @@ export default function Fields() {
       <table className="table">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Address</th>
             <th>Laltitude</th>
