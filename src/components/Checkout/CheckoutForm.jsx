@@ -85,6 +85,12 @@ export default function CheckoutForm(props) {
 
             setIsLoading(false);
         }).catch(error => {
+            props.setReservations((prevState) => prevState.map((reservation) => {
+                if (reservation.id === props.currentReservationId) {
+                    reservation.can_pay = false;
+                }
+                return reservation;
+            }));
             props.setShowPaymentModal(false);
             Report.failure(
                 'Failure',

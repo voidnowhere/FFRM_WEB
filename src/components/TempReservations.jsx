@@ -1,15 +1,6 @@
 import Header from "./Header.jsx";
 import {
-    Badge,
-    Button,
-    Container,
-    FloatingLabel,
-    Form,
-    ListGroup,
-    Modal,
-    OverlayTrigger,
-    Table,
-    Tooltip
+    Badge, Button, Container, FloatingLabel, Form, ListGroup, Modal, OverlayTrigger, Table, Tooltip
 } from "react-bootstrap";
 import {useEffect, useRef, useState} from "react";
 import axiosInstance from "../axiosInstance.js";
@@ -22,9 +13,8 @@ import jwt_decode from "jwt-decode";
 
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-if (localStorage.getItem('access_token')) {
-    const loggedInPlayerId = jwt_decode(localStorage.getItem('access_token')).user_id;
-}
+const loggedInPlayerId = (localStorage.getItem('access_token') !== null) ?
+    jwt_decode(localStorage.getItem('access_token')).user_id : null;
 
 function TempReservations() {
     const [reservations, setReservations] = useState([]);
@@ -84,6 +74,7 @@ function TempReservations() {
             email: playerEmail,
         }).then((response) => {
             getPlayers(reservationId);
+            playerEmailRef.current.value = '';
             Report.success(
                 'Success',
                 response.data.message,
@@ -91,6 +82,7 @@ function TempReservations() {
                 {backOverlay: false}
             );
         }).catch((error) => {
+            playerEmailRef.current.value = '';
             if (error.response.status === 400) {
                 Report.failure(
                     'Failure',
