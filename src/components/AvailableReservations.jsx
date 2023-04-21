@@ -9,7 +9,7 @@ function AvailableReservations() {
     const [reservations, setReservations] = useState([]);
 
     useEffect(() => {
-        axiosInstance.get('api/temp_reservations/available/').then(response => {
+        axiosInstance.get('api/reservations/available/').then(response => {
             setReservations(response.data);
         });
     }, [])
@@ -21,7 +21,7 @@ function AvailableReservations() {
             'Yes',
             'No',
             () => {
-                axiosInstance.patch(`api/temp_reservations/${reservationId}/join/`)
+                axiosInstance.patch(`api/reservations/${reservationId}/join/`)
                     .then(response => {
                         const reservationIndex = reservations.findIndex((reservation) => reservation.id === reservationId);
                         const reservation = reservations[reservationIndex];
