@@ -39,6 +39,13 @@ export default function Header() {
                         {
                             isAuthenticated && isOwner
                             &&
+                           
+                            <Nav.Link as={Link} to="/fields" active={Boolean(useMatch('/fields'))}>Fields</Nav.Link>
+                        }
+ {
+                            isAuthenticated && isOwner
+                            &&
+                           
                             <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}>Filed types</Nav.Link>
                         }
                         {
@@ -60,9 +67,7 @@ export default function Header() {
                             </NavDropdown>
                         }
                     </Nav>
-                    <Nav className="me-auto">
-                        <Nav.Link as={Link} to="/fields" active={Boolean(useMatch('/fields'))}>Fields</Nav.Link>
-                    </Nav>
+                
                     <Nav>
                         {isAuthenticated ?
                             (<>

@@ -6,7 +6,9 @@ import { Confirm } from "notiflix/build/notiflix-confirm-aio";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import UpdateFieldForm from "./UpdateFieldForm.jsx";
 import Form from "react-bootstrap/Form";
-import { Container} from 'react-bootstrap';
+import { Container, Button, Modal } from "react-bootstrap";
+import FieldsOnMap from "./FieldsOnMap.jsx";
+
 export default function Fields() {
   const [fields, setFields] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -17,7 +19,7 @@ export default function Fields() {
   const [searchInput, setSearchInput] = useState("");
   const [searchSelect, setSearchSelect] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
-
+  const [mapModal, setMapModal] = useState(false);
   const [cities, setCities] = useState([]);
 
   const soilTypeOptions = [
@@ -30,7 +32,7 @@ export default function Fields() {
       .get("api/fields/")
       .then((responsefields) => {
         setFields(responsefields.data);
-        // console.log(responsefields.data);
+        //console.log(responsefields.data);
       })
       .catch((error) => {
         console.error(error);
@@ -51,7 +53,6 @@ export default function Fields() {
   useEffect(() => {
     // console.log(zones);
   }, [zones]);
-
 
   useEffect(() => {
     axiosInstance
@@ -102,12 +103,10 @@ export default function Fields() {
       "Abort",
       async () => {
         try {
-
           const response = await axiosInstance({
-            method: 'delete',
+            method: "delete",
             url: `/api/fields/${fieldId}`,
-        
-          })
+          });
 
           if (response.status === 200 || response.status === 204) {
             setFields(fields.filter((field) => field.id !== fieldId));
@@ -120,7 +119,7 @@ export default function Fields() {
         }
       },
       () => {
-      //  console.log("If you say so...");
+        //  console.log("If you say so...");
       },
       {}
     );
@@ -152,6 +151,7 @@ export default function Fields() {
 
   const handleAddfield = (newField) => {
     // add new field to list of fields
+
     setFields([...fields, newField]);
   };
   const updateField = (updateField) => {
@@ -161,7 +161,6 @@ export default function Fields() {
     setFields(updatedfields);
   };
 
-  
   const searchItems = (searchValue) => {
     setSearchInput(searchValue);
     const filterFunction = (field) => {
@@ -173,9 +172,9 @@ export default function Fields() {
             .toLowerCase()
             .includes(searchValue.toLowerCase());
         case "3":
-          const nomZone=getFieldZone(field.id);
+          const nomZone = getFieldZone(field.id);
           return nomZone.toLowerCase().includes(searchValue.toLowerCase());
-    
+
         default:
           return true;
       }
@@ -216,81 +215,102 @@ export default function Fields() {
   };
 
   return (
-   <>
+    <>
       <Header />
       <Container>
-      <div className="fields-container"></div>
-
-      <h1>List of Fields</h1>
-      <button className="btn btn-primary" onClick={handleAddShow}>
-        Add Field
-      </button>
-      <br />
-
-      <br />
-      <Form className="d-flex">
-        <Form.Select
-          style={{ width: "120px" }}
-          size="sm"
-          onChange={(e) => {
-            setSearchSelect(e.target.value);
-          }}
-        >
-          <option>Search by:</option>
-          <option key="searchSelect1" value="1">
-            Name
-          </option>
-          <option key="searchSelect2" value="2">
-            Address
-          </option>
-          <option key="searchSelect3" value="3">
-            Zone
-          </option>
-        </Form.Select>
-        <Form.Control
-          type="search"
-          placeholder="Search for fields"
-          className="me-2"
-          aria-label="Search"
-          onChange={(e) => searchItems(e.target.value)}
-        />
-      </Form>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Laltitude</th>
-            <th>Longitude</th>
-            <th>Description</th>
-            <th>Field Type</th>
-            <th>Zone</th>
-            <th>Soil Type</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        {searchInput.length > 2
-          ? filteredResults.map((field) => renderField(field))
-          : fields.map((field) => renderField(field))}
-      </table>
-      <AddFieldForm
-        onAddField={handleAddfield}
-        fieldTypes={fieldTypes}
-        cities={cities}
-        zones={zones}
-        show={showAddModal}
-        handleClose={handleAddClose}
-      />
-      {editedField && (
-        <UpdateFieldForm
-          showModal={showModal}
-          onHide={onHideModal}
-          field={editedField}
+        <h1>List of Fields</h1>
+        <button className="btn btn-primary" onClick={handleAddShow}>
+          Add Field
+        </button>
+        <span> </span>
+        <button className="btn btn-secondary" onClick={() => setMapModal(true)}>
+          Fields On Map
+        </button>
+        <br />
+        <Form className="d-flex">
+          <Form.Select
+            style={{ width: "120px" }}
+            size="sm"
+            onChange={(e) => {
+              setSearchSelect(e.target.value);
+            }}
+          >
+            <option>Search by:</option>
+            <option key="searchSelect1" value="1">
+              Name
+            </option>
+            <option key="searchSelect2" value="2">
+              Address
+            </option>
+            <option key="searchSelect3" value="3">
+              Zone
+            </option>
+          </Form.Select>
+          <Form.Control
+            type="search"
+            placeholder="Search for fields"
+            className="me-2"
+            aria-label="Search"
+            onChange={(e) => searchItems(e.target.value)}
+          />
+        </Form>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Laltitude</th>
+              <th>Longitude</th>
+              <th>Description</th>
+              <th>Field Type</th>
+              <th>Zone</th>
+              <th>Soil Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          {searchInput.length > 2
+            ? filteredResults.map((field) => renderField(field))
+            : fields.map((field) => renderField(field))}
+        </table>
+        <AddFieldForm
+          onAddField={handleAddfield}
+          fieldTypes={fieldTypes}
           cities={cities}
-          updateField={updateField}
+          zones={zones}
+          show={showAddModal}
+          handleClose={handleAddClose}
         />
-      )}
-    </Container>
+        {editedField && (
+          <UpdateFieldForm
+            updateField={updateField}
+            showModal={showModal}
+            onHide={onHideModal}
+            field={editedField}
+            cities={cities}
+          />
+        )}
+
+        <Modal
+          show={mapModal}
+          onHide={() => {
+            setMapModal(false);
+          }}
+          size="xl"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Fields On Map
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <FieldsOnMap />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => setMapModal(false)}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      </Container>
     </>
   );
 }

@@ -2,6 +2,7 @@ import { Form, Button, Modal } from "react-bootstrap";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
 import React, { useEffect, useState } from "react";
+import Map from "./Map";
 Notify.init({
   position: "center-top", // Notification position
   distance: "10px", // Distance between notifications
@@ -12,7 +13,7 @@ Notify.init({
   timeout: 3000,
 });
 
-function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
+function UpdateFieldForm({ showModal, onHide, field, cities,updateField,currentLocation}) {
   const [updatedField, setUpdatedField] = useState(field);
   const [id, setId] = useState(updatedField?.id);
   const [name, setName] = useState(updatedField?.name);
@@ -33,7 +34,7 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
   const [zoneError, setZoneError] = useState([]);
   const [typeError, setTypeError] = useState([]);
   const [soilTypeError, setSoilTypeError] = useState([]);
-
+  const [showMap, setShowMap] = useState(false);
   const [zoneId, setZoneId] = useState(updatedField?.zone);
   const [cityId, setCityId] = useState("");
 
@@ -61,10 +62,14 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
     const fetchCity = async () => {
       const result = await axiosInstance.get(`/api/cities/${updatedField?.zone}/city`);
       setCityId(result.data.id);
-      console.log(result.data);
+      //console.log(result.data);
     };
     fetchCity();
   }, []);
+
+  const handleShowMapChange = (e) => {
+    setShowMap(e.target.checked);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -88,7 +93,7 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
       data: field,
     })
       .then((response) => {
-        console.log(response);
+        //console.log(response);
 
         Notify.success("Field updated successfully.");
         // Reset the form fields
@@ -115,6 +120,10 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
         .then((response) => {
             setZones(response.data);
         });
+};
+const handleCoordsSelected = (coords) => {
+  setLatitude(coords[0]);
+  setLongitude(coords[1]);
 };
 
   return (
@@ -144,6 +153,15 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
             />
             <div className="text-danger">{addressError}</div>
           </Form.Group>
+          <Form.Group controlId="formMap">
+            <Form.Label>Field Location</Form.Label>
+          <Form.Check
+            type="checkbox"
+            label="Select location on map "
+            checked={showMap}
+            onChange={handleShowMapChange}
+          />
+           </Form.Group>
           <Form.Group controlId="formLatitude">
             <Form.Label>Latitude</Form.Label>
             <Form.Control
@@ -255,6 +273,33 @@ function UpdateFieldForm({ showModal, onHide, field, cities,updateField }) {
         <Button type="submit" variant="primary" onClick={handleSubmit}>
           Save Changes
         </Button>
+        {showMap && (
+          <Modal  size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+            show={showMap}
+            onHide={() => {
+              setShowMap(false);
+            }}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Choose location on Map</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Map onSelect={handleCoordsSelected} center={currentLocation} />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowMap(false);
+                }}
+              >
+                Back
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
       </Modal.Footer>
     </Modal>
   );

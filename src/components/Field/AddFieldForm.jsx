@@ -29,7 +29,7 @@ function AddFieldForm({
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [is_active, setIs_active] = useState(false);
-  const [soilType, setSoilType] = useState("");
+  const [soil_type, setSoil_type] = useState("");
   const [zone, setZone] = useState("");
   const [cityId, setCityId] = useState("");
   const [zones, setZones] = useState([]);
@@ -52,21 +52,22 @@ function AddFieldForm({
       type: type,
       is_active: is_active,
       zone: zone,
-      soil_type: soilType,
+      soil_type: soil_type,
     };
 
-    console.log(field);
+    //console.log(field);
     axiosInstance({
       method: "post",
       url: `/api/fields/`,
       data: field,
     })
       .then((response) => {
-        console.log(response);
+       // console.log(response);
         Notify.success("Field added successfully.");
         // Reset the form fields
         // Call the onAddField callback function to refresh the list of fields
-        onAddField(field);
+        onAddField(response.data);
+        console.log(response.data);
         setName("");
         setAddress("");
         setLatitude("");
@@ -76,7 +77,7 @@ function AddFieldForm({
         setIs_active(false);
         setZone("");
         setCityId("");
-        setSoilType("");
+        setSoil_type("");
 
       })
       .catch((error) => {
@@ -124,6 +125,7 @@ function AddFieldForm({
             />
             <div className="text-danger">{nameError}</div>
           </Form.Group>
+
           <Form.Group controlId="formAddress">
             <Form.Label>Address</Form.Label>
             <Form.Control
@@ -134,13 +136,22 @@ function AddFieldForm({
             />
             <div className="text-danger">{addressError}</div>
           </Form.Group>
+          <Form.Group controlId="formMap">
+            <Form.Label>Field Location</Form.Label>
+          <Form.Check
+            type="checkbox"
+            label="Select location on map "
+            checked={showMap}
+            onChange={handleShowMapChange}
+          />
+           </Form.Group>
           <Form.Group controlId="formLatitude">
             <Form.Label>Latitude</Form.Label>
             <Form.Control
               type="number"
+              required disabled
               value={latitude}
               onChange={(event) => setLatitude(event.target.value)}
-              required
             />
           </Form.Group>
           <Form.Group controlId="formLongitude">
@@ -149,7 +160,7 @@ function AddFieldForm({
               type="number"
               value={longitude}
               onChange={(event) => setLongitude(event.target.value)}
-              required
+              required disabled
             />
           </Form.Group>
           <Form.Group controlId="formDescription">
@@ -223,8 +234,8 @@ function AddFieldForm({
             <Form.Label>Soil Type</Form.Label>
             <Form.Control
               as="select"
-              value={soilType}
-              onChange={(event) => setSoilType(event.target.value)}
+              value={soil_type}
+              onChange={(event) => setSoil_type(event.target.value)}
             >
               <option value="">Choose...</option>
               {TYPE_CHOICES.map((choice, index) => (
@@ -235,12 +246,7 @@ function AddFieldForm({
             </Form.Control>
             <div className="text-danger">{soilTypeError}</div>
           </Form.Group>
-          <Form.Check
-            type="checkbox"
-            label="Show Map"
-            checked={showMap}
-            onChange={handleShowMapChange}
-          />
+         
           <Button variant="primary" type="submit">
             Add Field
           </Button>
@@ -256,7 +262,7 @@ function AddFieldForm({
           aria-labelledby="contained-modal-title-vcenter"
           centered
             show={showMap}
-            hide={() => {
+            onHide={() => {
               setShowMap(false);
             }}
           >
