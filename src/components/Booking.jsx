@@ -5,7 +5,16 @@ import {Report} from 'notiflix/build/notiflix-report-aio';
 import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Header from "./Header.jsx";
+import marker_icon from '../assets/marker/marker-icon.png';
+import marker_shadow from '../assets/marker/marker-shadow.png';
+import marker_icon_2x from '../assets/marker/marker-icon-2x.png';
 
+const markerIcon = L.icon({
+    ...L.Icon.Default.prototype.options,
+    iconUrl: marker_icon,
+    iconRetinaUrl: marker_icon_2x,
+    shadowUrl: marker_shadow,
+});
 
 function Booking() {
     const [date, setDate] = useState("");
@@ -129,7 +138,7 @@ function Booking() {
                                     attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 />
-                                <Marker position={[fieldLocation.latitude, fieldLocation.longitude]}
+                                <Marker position={[fieldLocation.latitude, fieldLocation.longitude]} icon={markerIcon}
                                         eventHandlers={{
                                             click: () => {
                                                 window.open(`https://www.google.com/maps/search/?api=1&query=${fieldLocation.latitude},${fieldLocation.longitude}`, "_blank");
