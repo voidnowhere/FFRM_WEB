@@ -1,20 +1,18 @@
 import Table from "react-bootstrap/Table";
 import axiosInstance from "../axiosInstance.js";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
-import { Form } from "react-bootstrap";
-import { Modal } from "react-bootstrap";
-import { Notify } from "notiflix/build/notiflix-notify-aio";
+import {Container, Form, Modal} from "react-bootstrap";
+import {Notify} from "notiflix/build/notiflix-notify-aio";
 import Header from "./Header.jsx";
-import { Container } from "reactstrap";
-import { Confirm } from "notiflix";
+import {Confirm} from "notiflix";
 
-export default function ListFieldType(props) {
+export default function FieldTypes(props) {
   const [data, setData] = useState([]);
 
   const [name, setName] = useState("");
-  const [max, setMax] = useState("");
-  const [priceHour, setPriceHour] = useState("");
+  const [max_players, setMaxPlayers] = useState("");
+  const [price_per_hour, setPriceHour] = useState("");
   const [id, setId] = useState("");
 
   const [showPost, setShowPost] = useState(false);
@@ -30,8 +28,8 @@ export default function ListFieldType(props) {
       data.map((data, i) =>
         data.id == dataValue
           ? (setName(data.name),
-            setMax(data.max),
-            setPriceHour(data.priceHour),
+            setMaxPlayers(data.max_players),
+            setPriceHour(data.price_per_hour),
             setId(dataValue))
           : null
       );
@@ -49,8 +47,8 @@ export default function ListFieldType(props) {
     axiosInstance
       .post("api/field_types/", {
         name: name,
-        max: max,
-        priceHour: priceHour,
+        max_players: max_players,
+        price_per_hour: price_per_hour,
       })
       .then(() => {
         Notify.success("successfully added ", {
@@ -64,7 +62,7 @@ export default function ListFieldType(props) {
 
     setShowPost(false);
     setName("");
-    setMax("");
+    setMaxPlayers("");
     setPriceHour("");
   };
 
@@ -73,8 +71,8 @@ export default function ListFieldType(props) {
     axiosInstance
       .put("api/field_types/" + id + "/", {
         name: name,
-        max: max,
-        priceHour: priceHour,
+        max_players: max_players,
+        price_per_hour: price_per_hour,
       })
       .then(() => {
         Notify.success("successfully edited ", {
@@ -88,7 +86,7 @@ export default function ListFieldType(props) {
 
     setShowEdit(false);
     setName("");
-    setMax("");
+    setMaxPlayers("");
     setPriceHour("");
   };
 
@@ -134,8 +132,8 @@ export default function ListFieldType(props) {
             {data.map((data, i) => (
               <tr key={i}>
                 <td>{data.name}</td>
-                <td>{data.max}</td>
-                <td>{data.priceHour}</td>
+                <td>{data.max_players}</td>
+                <td>{data.price_per_hour}</td>
                 <td>
                   <Button
                     value={data.id}
@@ -182,8 +180,8 @@ export default function ListFieldType(props) {
                 <Form.Control
                   type="text"
                   placeholder="MAX"
-                  value={max}
-                  onChange={(e) => setMax(event.target.value)}
+                  value={max_players}
+                  onChange={(e) => setMaxPlayers(event.target.value)}
                 />
               </Form.Group>
 
@@ -192,7 +190,7 @@ export default function ListFieldType(props) {
                 <Form.Control
                   type="text"
                   placeholder="PRICE Hour"
-                  value={priceHour}
+                  value={price_per_hour}
                   onChange={(e) => setPriceHour(event.target.value)}
                 />
               </Form.Group>
@@ -232,8 +230,8 @@ export default function ListFieldType(props) {
                 <Form.Control
                   type="text"
                   placeholder="MAX"
-                  value={max}
-                  onChange={(e) => setMax(event.target.value)}
+                  value={max_players}
+                  onChange={(e) => setMaxPlayers(event.target.value)}
                 />
               </Form.Group>
 
@@ -242,7 +240,7 @@ export default function ListFieldType(props) {
                 <Form.Control
                   type="text"
                   placeholder="PRICE Hour"
-                  value={priceHour}
+                  value={price_per_hour}
                   onChange={(e) => setPriceHour(event.target.value)}
                 />
               </Form.Group>

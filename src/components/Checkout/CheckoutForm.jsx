@@ -55,7 +55,7 @@ export default function CheckoutForm(props) {
 
         setIsLoading(true);
 
-        axiosInstance.get(`api/temp_reservations/${props.currentReservationId}/payment/can-pay`).then(async () => {
+        axiosInstance.get(`api/reservations/${props.currentReservationId}/payment/can-pay`).then(async () => {
             const {error} = await stripe.confirmPayment({
                 elements,
                 redirect: 'if_required',
@@ -85,6 +85,12 @@ export default function CheckoutForm(props) {
 
             setIsLoading(false);
         }).catch(error => {
+            props.setReservations((prevState) => prevState.map((reservation) => {
+                if (reservation.id === props.currentReservationId) {
+                    reservation.can_pay = false;
+                }
+                return reservation;
+            }));
             props.setShowPaymentModal(false);
             Report.failure(
                 'Failure',
@@ -100,7 +106,6 @@ export default function CheckoutForm(props) {
     }
 
     return (
-
         <form id="payment-form" onSubmit={handleSubmit}>
             <PaymentElement onReady={() => setIsElementsReady(true)} id="payment-element"
                             options={paymentElementOptions}/>

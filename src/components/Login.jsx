@@ -24,7 +24,7 @@ export default function Login() {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('user_type', response.data.type);
-            dispatch(userLogin({'userType': response.data.type}));
+            dispatch(userLogin());
             setEmail('');
             setPassword('');
             Notify.success('Successful login', {

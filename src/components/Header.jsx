@@ -4,6 +4,7 @@ import {Notify} from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../axiosInstance.js";
 import {useDispatch, useSelector} from "react-redux";
 import {userLogout} from "../features/user/userSlice.js";
+import logo from '../assets/logo.png';
 
 export default function Header() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -11,7 +12,7 @@ export default function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isProfile = Boolean(useMatch('/profile')) || Boolean(useMatch('/update-password'));
-    const isReservations = Boolean(useMatch('/temp-reservations')) || Boolean(useMatch('/reservations/available'));
+    const isReservations = Boolean(useMatch('/reservations')) || Boolean(useMatch('/reservations/available'));
     const isOwner = useSelector(state => state.user.isOwner);
 
     function logout() {
@@ -29,45 +30,39 @@ export default function Header() {
     }
 
     return (
-        <Navbar bg="light" expand="lg" className="shadow" style={{display : "block"}}>
+        <Navbar bg="light" expand="lg" className="shadow" style={{display: "block"}}>
             <Container>
-                <Navbar.Brand>FFRM</Navbar.Brand>
+                <Navbar.Brand>
+                    <img src={logo} width="30" height="30" alt="Logo"/>
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/" active={Boolean(useMatch('/'))}>Home</Nav.Link>
                         {
-                            isAuthenticated && isOwner
+                            !isOwner
                             &&
-                           
-                            <Nav.Link as={Link} to="/fields" active={Boolean(useMatch('/fields'))}>Fields</Nav.Link>
-                        }
- {
-                            isAuthenticated && isOwner
-                            &&
-                           
-                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}>Filed types</Nav.Link>
+                            <Nav.Link as={Link} to="/booking" active={Boolean(useMatch('/booking'))}>Booking</Nav.Link>
                         }
                         {
-                            isAuthenticated
+                            isAuthenticated && isOwner
+                            &&
+                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}
+                            >Filed types</Nav.Link>
+                        }
+                        {
+                            isAuthenticated && isPlayer
                             &&
                             <NavDropdown title="Reservations" active={isReservations}>
-                                {
-                                    isPlayer
-                                    &&
-                                    <>
-                                        <NavDropdown.Item as={Link} to="/temp-reservations"
-                                                          active={Boolean(useMatch('/temp-reservations'))}
-                                        >Temp reservations</NavDropdown.Item>
-                                        <NavDropdown.Item as={Link} to="/reservations/available"
-                                                          active={Boolean(useMatch('/reservations/available'))}
-                                        >Available</NavDropdown.Item>
-                                    </>
-                                }
+                                <NavDropdown.Item as={Link} to="/reservations"
+                                                  active={Boolean(useMatch('/reservations'))}
+                                >Reservations</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/reservations/available"
+                                                  active={Boolean(useMatch('/reservations/available'))}
+                                >Available</NavDropdown.Item>
                             </NavDropdown>
                         }
                     </Nav>
-                
                     <Nav>
                         {isAuthenticated ?
                             (<>
@@ -75,13 +70,11 @@ export default function Header() {
                                     <NavDropdown.Item as={Link} to="/profile"
                                                       active={Boolean(useMatch('/profile'))}
                                     >Information</NavDropdown.Item>
-                                    
                                     <NavDropdown.Item as={Link} to="/update-password"
                                                       active={Boolean(useMatch('/update-password'))}
                                     >Update password</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link onClick={logout}>Logout</Nav.Link>
-                                
                             </>)
                             :
                             (<>
