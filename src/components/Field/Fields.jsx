@@ -32,7 +32,7 @@ export default function Fields() {
       .get("api/fields/")
       .then((responsefields) => {
         setFields(responsefields.data);
-        //console.log(responsefields.data);
+        console.log(responsefields.data);
       })
       .catch((error) => {
         console.error(error);

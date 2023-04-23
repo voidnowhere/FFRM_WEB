@@ -30,6 +30,7 @@ function AddFieldForm({
   const [type, setType] = useState("");
   const [is_active, setIs_active] = useState(false);
   const [soil_type, setSoil_type] = useState("");
+  const [image, setImage] = useState("");
   const [zone, setZone] = useState("");
   const [cityId, setCityId] = useState("");
   const [zones, setZones] = useState([]);
@@ -43,31 +44,30 @@ function AddFieldForm({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const field = {
-      name: name,
-      address: address,
-      latitude: latitude,
-      longitude: longitude,
-      description: description,
-      type: type,
-      is_active: is_active,
-      zone: zone,
-      soil_type: soil_type,
-    };
-
-    //console.log(field);
+  
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("address", address);
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
+    formData.append("description", description);
+    formData.append("type", type);
+    formData.append("is_active", is_active);
+    formData.append("soil_type", soil_type);
+    formData.append("zone", zone);
+    formData.append("image", image);
+  
     axiosInstance({
       method: "post",
       url: `/api/fields/`,
-      data: field,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     })
       .then((response) => {
-       // console.log(response);
         Notify.success("Field added successfully.");
-        // Reset the form fields
-        // Call the onAddField callback function to refresh the list of fields
         onAddField(response.data);
-        console.log(response.data);
         setName("");
         setAddress("");
         setLatitude("");
@@ -78,11 +78,10 @@ function AddFieldForm({
         setZone("");
         setCityId("");
         setSoil_type("");
-
+        setImage(null);
       })
       .catch((error) => {
         const errors = error.response.data;
-        console.log(errors);
         setNameError(errors.name);
         setAddressError(errors.address);
         setDescriptionError(errors.description);
@@ -92,6 +91,7 @@ function AddFieldForm({
         Notify.failure("Failed to add field.");
       });
   };
+  
 
   const handleCityChange = (e) => {
     const cityId = e.target.value;
@@ -108,6 +108,7 @@ function AddFieldForm({
     setLatitude(coords[0]);
     setLongitude(coords[1]);
   };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -138,18 +139,19 @@ function AddFieldForm({
           </Form.Group>
           <Form.Group controlId="formMap">
             <Form.Label>Field Location</Form.Label>
-          <Form.Check
-            type="checkbox"
-            label="Select location on map "
-            checked={showMap}
-            onChange={handleShowMapChange}
-          />
-           </Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="Select location on map "
+              checked={showMap}
+              onChange={handleShowMapChange}
+            />
+          </Form.Group>
           <Form.Group controlId="formLatitude">
             <Form.Label>Latitude</Form.Label>
             <Form.Control
               type="number"
-              required disabled
+              required
+              disabled
               value={latitude}
               onChange={(event) => setLatitude(event.target.value)}
             />
@@ -160,7 +162,8 @@ function AddFieldForm({
               type="number"
               value={longitude}
               onChange={(event) => setLongitude(event.target.value)}
-              required disabled
+              required
+              disabled
             />
           </Form.Group>
           <Form.Group controlId="formDescription">
@@ -246,7 +249,15 @@ function AddFieldForm({
             </Form.Control>
             <div className="text-danger">{soilTypeError}</div>
           </Form.Group>
-         
+          <Form.Group controlId="formImage">
+            <Form.Label>Image</Form.Label>
+            <Form.Control
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+            />
+          </Form.Group>
           <Button variant="primary" type="submit">
             Add Field
           </Button>
@@ -258,9 +269,10 @@ function AddFieldForm({
         </Button>
 
         {showMap && (
-          <Modal  size="lg"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+          <Modal
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
             show={showMap}
             onHide={() => {
               setShowMap(false);
