@@ -13,6 +13,13 @@ const axiosInstance = axios.create({
     }
 });
 
+function logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_type');
+    window.location = '/login?session-expired';
+}
+
 axiosInstance.interceptors.request.use(async (config) => {
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
@@ -22,23 +29,34 @@ axiosInstance.interceptors.request.use(async (config) => {
             const refreshToken = localStorage.getItem('refresh_token');
             // check if refresh token is expired
             if (unixNow >= jwt_decode(refreshToken).exp) {
-                // logout
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
-                localStorage.removeItem('user_type');
-                window.location = '/?session-expired';
+                logout();
             } else {
                 // refresh access token
-                const {data} = await axios.post(`${baseURL}api/token/refresh/`, {
-                    refresh: refreshToken,
-                });
-                localStorage.setItem('access_token', data.access);
-                localStorage.setItem('refresh_token', data.refresh);
+                try {
+                    const {data} = await axios.post(`${baseURL}api/token/refresh/`, {
+                        refresh: refreshToken,
+                    });
+                    localStorage.setItem('access_token', data.access);
+                    localStorage.setItem('refresh_token', data.refresh);
+                } catch (error) {
+                    logout();
+                }
             }
         }
         config.headers.Authorization = `Bearer ${localStorage.getItem('access_token')}`;
     }
     return config;
 });
+
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        // 401 Unauthorized
+        if (error.response.status === 401) {
+            logout();
+        }
+        return Promise.reject(error);
+    }
+);
 
 export default axiosInstance;
