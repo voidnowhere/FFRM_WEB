@@ -1,6 +1,6 @@
 import Header from "./Header.jsx";
 import {Button, Container, FloatingLabel, Form, FormControl} from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axiosInstance from "../axiosInstance.js";
 import {Notify} from 'notiflix/build/notiflix-notify-aio';
 import {useNavigate} from "react-router-dom";
@@ -14,6 +14,13 @@ export default function Login() {
     const [emailError, setEmailError] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
+
+    useEffect(() => {
+        if (window.location.search.includes('session-expired')) {
+            Notify.failure('Your session is expired!', {position: 'center-bottom'});
+            navigate('/login');
+        }
+    }, []);
 
     function submit(event) {
         event.preventDefault();

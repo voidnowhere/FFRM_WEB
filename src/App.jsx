@@ -9,7 +9,6 @@ import UpdatePassword from "./components/UpdatePassword.jsx";
 import {useSelector} from "react-redux";
 import AvailableReservations from "./components/AvailableReservations.jsx";
 import FieldTypes from "./components/FieldTypes.jsx";
-import {Analytics} from '@vercel/analytics/react';
 import Reservations from "./components/Reservations.jsx";
 import Booking from "./components/Booking.jsx";
 
@@ -34,9 +33,6 @@ export default function App() {
     ]);
 
     return (
-        <>
-            <RouterProvider router={router}/>
-            <Analytics/>
-        </>
+        <RouterProvider router={router}/>
     )
 }
