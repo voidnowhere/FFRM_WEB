@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Modal } from "react-bootstrap";
+import {Form, Button, Modal, Row, Col} from "react-bootstrap";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
 import Map from "./Map";
@@ -15,7 +15,7 @@ Notify.init({
 const TYPE_CHOICES = ["naturelle", "synthetique"];
 
 function AddFieldForm({
-  onAddField,
+  getFields,
   fieldTypes,
   show,
   cities,
@@ -67,7 +67,7 @@ function AddFieldForm({
     })
       .then((response) => {
         Notify.success("Field added successfully.");
-        onAddField(response.data);
+        getFields();
         setName("");
         setAddress("");
         setLatitude("");
@@ -81,6 +81,7 @@ function AddFieldForm({
         setImage(null);
       })
       .catch((error) => {
+        console.log(error);
         const errors = error.response.data;
         setNameError(errors.name);
         setAddressError(errors.address);
@@ -110,12 +111,15 @@ function AddFieldForm({
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} size="xl"
+           centered>
       <Modal.Header closeButton>
         <Modal.Title>Add a new field</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form id="myForm" onSubmit={handleSubmit}>
+          <Row>
+            <Col md={6}>
           <Form.Group controlId="formName">
             <Form.Label>Name</Form.Label>
             <Form.Control
@@ -183,7 +187,8 @@ function AddFieldForm({
               onChange={(event) => setIs_active(event.target.checked)}
             />
           </Form.Group>
-
+            </Col>
+            <Col md={6}>
           <Form.Group controlId="formZone">
             <Form.Label>City</Form.Label>
             <Form.Control
@@ -233,6 +238,7 @@ function AddFieldForm({
             </Form.Select>
             <div className="text-danger">{typeError}</div>
           </Form.Group>
+
           <Form.Group controlId="formSoilType">
             <Form.Label>Soil Type</Form.Label>
             <Form.Control
@@ -249,6 +255,8 @@ function AddFieldForm({
             </Form.Control>
             <div className="text-danger">{soilTypeError}</div>
           </Form.Group>
+
+
           <Form.Group controlId="formImage">
             <Form.Label>Image</Form.Label>
             <Form.Control
@@ -258,12 +266,15 @@ function AddFieldForm({
               onChange={(e) => setImage(e.target.files[0])}
             />
           </Form.Group>
-          <Button variant="primary" type="submit">
-            Add Field
-          </Button>
+            </Col>
+          </Row>
+
         </Form>
       </Modal.Body>
       <Modal.Footer>
+        <Button variant="primary"  type="submit" form="myForm">
+          Add Field
+        </Button>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>

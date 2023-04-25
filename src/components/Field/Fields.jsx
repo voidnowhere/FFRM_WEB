@@ -8,12 +8,14 @@ import UpdateFieldForm from "./UpdateFieldForm.jsx";
 import Form from "react-bootstrap/Form";
 import { Container, Button, Modal } from "react-bootstrap";
 import FieldsOnMap from "./FieldsOnMap.jsx";
+import FieldForm from "./FieldForm.jsx";
 
 export default function Fields() {
   const [fields, setFields] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editedField, setEditedField] = useState(null);
+  const [consultField, setConsultField] = useState(null);
   const [fieldTypes, setFieldTypes] = useState(null);
   const [zones, setZones] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -21,22 +23,27 @@ export default function Fields() {
   const [filteredResults, setFilteredResults] = useState([]);
   const [mapModal, setMapModal] = useState(false);
   const [cities, setCities] = useState([]);
+  const [consultModal, setConsultModal] = useState(false);
 
   const soilTypeOptions = [
     { value: "synthetique", label: "Synthetique" },
     { value: "naturelle", label: "Naturelle" },
   ];
 
-  useEffect(() => {
+  function getFields() {
     axiosInstance
       .get("api/fields/")
-      .then((responsefields) => {
-        setFields(responsefields.data);
-        console.log(responsefields.data);
+      .then((responseFields) => {
+        setFields(responseFields.data);
+        console.log(responseFields.data);
       })
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  useEffect(() => {
+    getFields();
   }, []);
 
   useEffect(() => {
@@ -129,9 +136,17 @@ export default function Fields() {
     setEditedField(field);
     setShowModal(true);
   };
+  const handleConsult = (field) => {
+    setConsultField(field);
+    setConsultModal(true);
+  };
   const onHideModal = () => {
     setShowModal(false);
     setEditedField(null);
+  };
+  const onHideConsultModal = () => {
+    setConsultModal(false);
+    setConsultField(null);
   };
   const getFieldType = (fieldTypeId) => {
     const fieldType = fieldTypes
@@ -184,96 +199,97 @@ export default function Fields() {
 
   const renderField = (field) => {
     return (
-      <tbody>
-        <tr key={field?.id}>
-          <td>{field?.name}</td>
-          <td>{field?.address}</td>
-          <td>{field?.latitude}</td>
-          <td>{field?.longitude}</td>
-          <td>{field?.description}</td>
-          <td>{getFieldType(field?.type)}</td>
-          <td>{getFieldZone(field?.zone)}</td>
-          <td>{field.soil_type}</td>
+      <tr key={field?.id}>
+        <td>{field?.name}</td>
+        <td>{field?.address}</td>
 
-          <td>
-            <button
-              className="btn btn-danger"
-              onClick={() => handleDelete(field?.id)}
-            >
-              Delete
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => handleEdit(field)}
-            >
-              Edit
-            </button>
-          </td>
-        </tr>
-      </tbody>
+        <td>{getFieldZone(field?.zone)}</td>
+
+        <td>
+          <button
+              className="btn btn-warning"
+              onClick={() => handleConsult(field)}
+          >
+            Consult
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => handleDelete(field?.id)}
+          >
+            Delete
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => handleEdit(field)}
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
     );
   };
 
   return (
     <>
       <Header />
-      <Container>
+      <Container className='my-3'>
         <h1>List of Fields</h1>
-        <button className="btn btn-primary" onClick={handleAddShow}>
-          Add Field
-        </button>
-        <span> </span>
-        <button className="btn btn-secondary" onClick={() => setMapModal(true)}>
-          Fields On Map
-        </button>
-        <br />
-        <Form className="d-flex">
-          <Form.Select
-            style={{ width: "120px" }}
-            size="sm"
-            onChange={(e) => {
-              setSearchSelect(e.target.value);
-            }}
-          >
-            <option>Search by:</option>
-            <option key="searchSelect1" value="1">
-              Name
-            </option>
-            <option key="searchSelect2" value="2">
-              Address
-            </option>
-            <option key="searchSelect3" value="3">
-              Zone
-            </option>
-          </Form.Select>
-          <Form.Control
-            type="search"
-            placeholder="Search for fields"
-            className="me-2"
-            aria-label="Search"
-            onChange={(e) => searchItems(e.target.value)}
-          />
-        </Form>
+        <div className='my-2' >
+          <button className="btn btn-primary" onClick={handleAddShow}>
+            Add Field
+          </button>
+          <span> </span>
+          <button className="btn btn-secondary" onClick={() => setMapModal(true)}>
+            Fields On Map
+          </button>
+        </div>
+        <div className='my-2' >
+          <Form className="d-flex">
+            <Form.Select
+                style={{ width: "120px" }}
+                size="sm"
+                onChange={(e) => {
+                  setSearchSelect(e.target.value);
+                }}
+            >
+              <option>Search by:</option>
+              <option key="searchSelect1" value="1">
+                Name
+              </option>
+              <option key="searchSelect2" value="2">
+                Address
+              </option>
+              <option key="searchSelect3" value="3">
+                Zone
+              </option>
+            </Form.Select>
+            <Form.Control
+                type="search"
+                placeholder="Search Bar"
+                className="me-2"
+                aria-label="Search"
+                onChange={(e) => searchItems(e.target.value)}
+            />
+          </Form>
+        </div>
+
         <table className="table">
           <thead>
             <tr>
               <th>Name</th>
               <th>Address</th>
-              <th>Laltitude</th>
-              <th>Longitude</th>
-              <th>Description</th>
-              <th>Field Type</th>
               <th>Zone</th>
-              <th>Soil Type</th>
               <th>Actions</th>
             </tr>
           </thead>
-          {searchInput.length > 2
-            ? filteredResults.map((field) => renderField(field))
-            : fields.map((field) => renderField(field))}
+          <tbody>
+            {searchInput.length > 2
+              ? filteredResults.map((field) => renderField(field))
+              : fields.map((field) => renderField(field))}
+          </tbody>
         </table>
         <AddFieldForm
-          onAddField={handleAddfield}
+          getFields={getFields}
           fieldTypes={fieldTypes}
           cities={cities}
           zones={zones}
@@ -288,6 +304,15 @@ export default function Fields() {
             field={editedField}
             cities={cities}
           />
+        )}
+        {consultField && (
+            <FieldForm
+                showModal={consultModal}
+                onHide={onHideConsultModal}
+                field={consultField}
+                getFieldZone={getFieldZone}
+                getFieldType={getFieldType}
+            />
         )}
 
         <Modal

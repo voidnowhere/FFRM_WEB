@@ -12,7 +12,7 @@ import FieldTypes from "./components/FieldTypes.jsx";
 import {Analytics} from '@vercel/analytics/react';
 import Reservations from "./components/Reservations.jsx";
 import Booking from "./components/Booking.jsx";
-
+import Fields from './components/Field/Fields'
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
     const isPlayer = useSelector(state => state.user.isPlayer);
@@ -29,7 +29,8 @@ export default function App() {
             element: (!isAuthenticated && !isPlayer) ? <Navigate to="/"/> : <AvailableReservations/>
         },
         {path: "/reservations", element: (!isAuthenticated && !isPlayer) ? <Navigate to="/"/> : <Reservations/>},
-        {path: "/filed-types", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <FieldTypes/>},
+        {path: "/field-types", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <FieldTypes/>},
+        {path: "/fields", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <Fields/>},
         {path: "/booking", element: (isOwner) ? <Navigate to="/"/> : <Booking/>},
     ]);
 

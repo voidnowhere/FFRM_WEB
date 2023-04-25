@@ -47,8 +47,12 @@ export default function Header() {
                         {
                             isAuthenticated && isOwner
                             &&
-                            <Nav.Link as={Link} to="/filed-types" active={Boolean(useMatch('/filed-types'))}
-                            >Filed types</Nav.Link>
+                            <>
+                                <Nav.Link as={Link} to="/field-types" active={Boolean(useMatch('/field-types'))}
+                                >Field types</Nav.Link>
+                                <Nav.Link as={Link} to="/fields" active={Boolean(useMatch('/fields'))}
+                                >Fields</Nav.Link>
+                            </>
                         }
                         {
                             isAuthenticated && isPlayer
