@@ -2,7 +2,7 @@ import axios from 'axios';
 import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
 
-const baseURL = import.meta.env.VITE_BASE_URL;
+export const baseURL = import.meta.env.VITE_BASE_URL;
 
 const axiosInstance = axios.create({
     baseURL: baseURL,
