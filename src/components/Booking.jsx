@@ -1,5 +1,4 @@
 import {Button, Card, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
-import {useEffect, useState} from "react";
 import axiosInstance from "../axiosInstance.js";
 import {Report} from 'notiflix/build/notiflix-report-aio';
 import {MapContainer, Marker, TileLayer} from "react-leaflet";
@@ -8,6 +7,7 @@ import Header from "./Header.jsx";
 import marker_icon from '../assets/marker/marker-icon.png';
 import marker_shadow from '../assets/marker/marker-shadow.png';
 import marker_icon_2x from '../assets/marker/marker-icon-2x.png';
+import {baseURL} from "../axiosInstance.js";
 
 const markerIcon = L.icon({
     ...L.Icon.Default.prototype.options,
@@ -17,24 +17,40 @@ const markerIcon = L.icon({
 });
 
 function Booking() {
-    const [date, setDate] = useState("");
-    const [beginTime, setBeginTime] = useState("");
-    const [endTime, setEndTime] = useState("");
+    const dateRef = useRef();
+    const beginTimeRef = useRef();
+    const endTimeRef = useRef();
     const [fields, setFields] = useState([]);
     const [fieldLocation, setFieldLocation] = useState(null);
     const [showMap, setShowMap] = useState(false);
 
+    function getFields() {
+        const date =new Date( Date.parse(dateRef.current.value))
+        const beginDateTime = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${beginTimeRef.current.value}`;
+        const endDateTime = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${endTimeRef.current.value}`;
 
-    useEffect(() => {
-        axiosInstance.get("api/reservations/fields/").then((response) => {
+
+        axiosInstance.post("api/reservations/fields/", {
+            begin_date_time: beginDateTime,
+            end_date_time: endDateTime
+        }).then((response) => {
             setFields(response.data);
+        }).catch((error) => {
+            Report.failure(
+                'Failure',
+                (error.response.data.detail === undefined) ? 'Please provide a valid date and time' : error.response.data.detail,
+                'Okay',
+            );
+
         });
-    }, []);
+    }
+
     const handleSubmit = (e, field) => {
         e.preventDefault();
+        const date =new Date( Date.parse(dateRef.current.value))
 
-        const beginDateTime = `${date}T${beginTime}:00Z`;
-        const endDateTime = `${date}T${endTime}:00Z`;
+        const beginDateTime = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${beginTimeRef.current.value}`;
+        const endDateTime = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${endTimeRef.current.value}`;
 
         axiosInstance.post("api/reservations/", {
             field: field.id,
@@ -66,11 +82,8 @@ function Booking() {
                                 Today
                             </InputGroup.Text>
                             <Form.Control
+                                ref={dateRef}
                                 type="date"
-                                aria-label="Default"
-                                aria-describedby="inputGroup-sizing-default"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
                             />
                         </InputGroup>
                     </Col>
@@ -79,13 +92,7 @@ function Booking() {
                             <InputGroup.Text id="inputGroup-sizing-default">
                                 Begin Time
                             </InputGroup.Text>
-                            <Form.Control
-                                aria-label="Default"
-                                aria-describedby="inputGroup-sizing-default"
-                                type="time"
-                                value={beginTime}
-                                onChange={(e) => setBeginTime(e.target.value)}
-                            />
+                            <Form.Control ref={beginTimeRef} type="time"/>
                         </InputGroup>
                     </Col>
                     <Col>
@@ -94,14 +101,12 @@ function Booking() {
                                 End Time
                             </InputGroup.Text>
                             <Form.Control
-                                aria-label="Default"
-                                aria-describedby="inputGroup-sizing-default"
+                                ref={endTimeRef}
                                 type="time"
-                                value={endTime}
-                                onChange={(e) => setEndTime(e.target.value)}
                             />
                         </InputGroup>
                     </Col>
+                    <Button onClick={() => getFields()}>Search</Button>
                 </Row>
                 {/* code for cities */}
                 <br/>
@@ -111,7 +116,7 @@ function Booking() {
                         &&
                         fields.map((field) => (
                             <Card key={field.id} style={{width: '18rem'}}>
-                                <Card.Img variant="top" src={field.image}/>
+                                <Card.Img variant="top" src={baseURL.slice(0, -1) + field.image}/>
                                 <Card.Body>
                                     <Card.Title>{field.name}</Card.Title>
                                     <Card.Text>
