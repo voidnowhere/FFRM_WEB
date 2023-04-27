@@ -4,8 +4,8 @@ import { Icon } from "leaflet/src/layer/marker";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import React, { useEffect, useState, useCallback } from "react";
 import axiosInstance from "../../axiosInstance.js";
-import { Container, Form } from "react-bootstrap";
-import Header from "../Header.jsx";
+import Form from "react-bootstrap/Form";
+
 
 const FieldsOnMap = () => {
   const position = [31.611530277838078, -8.047648552164675];
@@ -87,7 +87,7 @@ const FieldsOnMap = () => {
       <MapContainer
         style={{ height: "600px", width: "1100px" }}
         center={position}
-        zoom={13}
+        zoom={5}
         scrollWheelZoom={true}
       >
         <TileLayer
@@ -100,6 +100,9 @@ const FieldsOnMap = () => {
               key={marker.field.id}
               icon={customIcon}
               position={marker.geocode}
+              eventHandlers={{
+                click: () => handleMarkerClick(marker.field),
+              }}
             >
               {selectedField && (
                 <MyPopup
