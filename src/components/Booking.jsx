@@ -1,5 +1,6 @@
 import {Button, Card, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
-import axiosInstance from "../axiosInstance.js";
+import {useRef, useState} from "react";
+import axiosInstance, {baseURL} from "../axiosInstance.js";
 import {Report} from 'notiflix/build/notiflix-report-aio';
 import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -7,7 +8,6 @@ import Header from "./Header.jsx";
 import marker_icon from '../assets/marker/marker-icon.png';
 import marker_shadow from '../assets/marker/marker-shadow.png';
 import marker_icon_2x from '../assets/marker/marker-icon-2x.png';
-import {baseURL} from "../axiosInstance.js";
 
 const markerIcon = L.icon({
     ...L.Icon.Default.prototype.options,
