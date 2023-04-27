@@ -1,6 +1,6 @@
 import {Button, Card, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import {useRef, useState} from "react";
-import axiosInstance, {baseURL} from "../axiosInstance.js";
+import axiosInstance from "../axiosInstance.js";
 import {Report} from 'notiflix/build/notiflix-report-aio';
 import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -116,7 +116,7 @@ function Booking() {
                         &&
                         fields.map((field) => (
                             <Card key={field.id} style={{width: '18rem'}}>
-                                <Card.Img variant="top" src={baseURL.slice(0, -1) + field.image}/>
+                                <Card.Img variant="top" src={field.image}/>
                                 <Card.Body>
                                     <Card.Title>{field.name}</Card.Title>
                                     <Card.Text>
