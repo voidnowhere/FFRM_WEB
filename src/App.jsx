@@ -12,6 +12,7 @@ import FieldTypes from "./components/FieldTypes.jsx";
 import Reservations from "./components/Reservations.jsx";
 import Booking from "./components/Booking.jsx";
 import Fields from './components/Field/Fields'
+import "react-datetime/css/react-datetime.css";
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
