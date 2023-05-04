@@ -2,24 +2,13 @@ import {Button, Card, Col, Container, Form, InputGroup, Modal, Row} from "react-
 import {useEffect, useState} from "react";
 import axiosInstance from "../axiosInstance.js";
 import {Report} from 'notiflix/build/notiflix-report-aio';
-import {MapContainer, Marker, TileLayer} from "react-leaflet";
+import {MapContainer, Marker, TileLayer, Tooltip} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Header from "./Header.jsx";
-import marker_icon from '../assets/marker/marker-icon.png';
-import marker_shadow from '../assets/marker/marker-shadow.png';
-import marker_icon_2x from '../assets/marker/marker-icon-2x.png';
 import Datetime from 'react-datetime';
 import dayjs from "dayjs";
 import {FaClock, FaRegCalendarAlt} from "react-icons/all.js";
 import {useSelector} from "react-redux";
-
-
-const markerIcon = L.icon({
-    ...L.Icon.Default.prototype.options,
-    iconUrl: marker_icon,
-    iconRetinaUrl: marker_icon_2x,
-    shadowUrl: marker_shadow,
-});
 
 function Booking() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -32,8 +21,6 @@ function Booking() {
     const [fieldLocation, setFieldLocation] = useState(null);
     const [showMap, setShowMap] = useState(false);
     const [currentPosition, setCurrentPosition] = useState(null);
-    const [latitude, setLatitude] = useState(null);
-    const [longitude, setLongitude] = useState(null);
 
 
     function getFields() {
@@ -45,7 +32,7 @@ function Booking() {
                     longitude: position.coords.longitude,
                 };
                 setCurrentPosition(positionCords);
-                axiosInstance.post("api/booking/fields/", {
+                axiosInstance.post("api/bookings/fields/", {
                     begin_date_time: beginDateTime,
                     end_date_time: endDateTime,
                     latitude: positionCords.latitude,
@@ -57,10 +44,12 @@ function Booking() {
                         'Failure',
                         (error.response.detail === undefined) ? 'Please provide a valid date and time' : error.response.data.detail,
                         'Okay',
+                        () => null,
+                        {backOverlay: false}
                     );
                 });
             },
-            error => {
+            () => {
                 axiosInstance.post("api/booking/fields/", {
                     begin_date_time: beginDateTime,
                     end_date_time: endDateTime
@@ -71,6 +60,8 @@ function Booking() {
                         'Failure',
                         (error.response.detail === undefined) ? 'Please provide a valid date and time' : error.response.data.detail,
                         'Okay',
+                        () => null,
+                        {backOverlay: false}
                     );
                 });
             }
@@ -93,32 +84,38 @@ function Booking() {
 
     const handleSubmit = (e, field) => {
         e.preventDefault();
-        const endDateTime = dayjs(beginDateTime).add(numHours, 'hours').format('YYYY-MM-DD HH:mm');
-        if (isAuthenticated) {
-            axiosInstance.post("api/reservations/", {
-                field: field.id,
-                begin_date_time: beginDateTime,
-                end_date_time: endDateTime,
-            }).then(() => {
-                // handle successful reservation creation
-                Report.success('Success',
-                    'Now you should pay you reservation ',
-                    'Okay',
-                );
-            }).catch((error) => {
-                Report.failure(
-                    'Failure',
-                    (error.response.data.detail === undefined) ? 'Please provide a valid date and time' : error.response.data.detail,
-                    'Okay',
-                );
-
-            });
+        if (!isAuthenticated) {
+            Report.failure(
+                'Failure',
+                'You should singed in before confirm booking ',
+                'Okay',
+                () => null,
+                {backOverlay: false}
+            );
+            return;
         }
-        Report.failure(
-            'Failure',
-            'You should singed in before confirm booking ',
-            'Okay',
-        );
+        const endDateTime = dayjs(beginDateTime).add(numHours, 'hours').format('YYYY-MM-DD HH:mm');
+        axiosInstance.post("api/reservations/", {
+            field: field.id,
+            begin_date_time: beginDateTime,
+            end_date_time: endDateTime,
+        }).then(() => {
+            // handle successful reservation creation
+            Report.success('Success',
+                'Now you should pay you reservation ',
+                'Okay',
+                () => null,
+                {backOverlay: false}
+            );
+        }).catch((error) => {
+            Report.failure(
+                'Failure',
+                (error.response.data.detail === undefined) ? 'Please provide a valid date and time' : error.response.data.detail,
+                'Okay',
+                () => null,
+                {backOverlay: false}
+            );
+        });
     };
 
 
@@ -183,16 +180,19 @@ function Booking() {
                                         <strong>Type: </strong> {field.type.name}
                                     </Card.Text>
                                     <Card.Text>
-                                        <strong>Max Players: </strong> {field.type.max_players}
+                                        <strong>Max players: </strong> {field.type.max_players}
                                     </Card.Text>
                                     <Card.Text>
-                                        <strong>Price: </strong>{field.type.price_per_hour * numHours}
+                                        <strong>Price per hour: </strong>{field.type.price_per_hour}
                                     </Card.Text>
-                                    <Button variant="primary" onClick={(e) => handleSubmit(e, field)}>Book</Button>
-                                    <Button variant="secondary" onClick={() => {
-                                        setFieldLocation({latitude: field.latitude, longitude: field.longitude});
-                                        setShowMap(true);
-                                    }}>Map</Button>
+                                    <div className="d-flex gap-2">
+                                        <Button variant="outline-primary"
+                                                onClick={(e) => handleSubmit(e, field)}>Book</Button>
+                                        <Button variant="outline-secondary" onClick={() => {
+                                            setFieldLocation({latitude: field.latitude, longitude: field.longitude});
+                                            setShowMap(true);
+                                        }}>Map</Button>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         ))
@@ -209,10 +209,21 @@ function Booking() {
                                     attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 />
-                                <Marker position={[fieldLocation.latitude, fieldLocation.longitude]} icon={markerIcon}
+                                {
+                                    currentPosition
+                                    &&
+                                    <Marker position={[currentPosition.latitude, currentPosition.longitude]}>
+                                        <Tooltip direction="top" offset={[-15, -15]} permanent>Your location</Tooltip>
+                                    </Marker>
+                                }
+                                <Marker position={[fieldLocation.latitude, fieldLocation.longitude]}
                                         eventHandlers={{
                                             click: () => {
-                                                window.open(`https://www.google.com/maps/search/?api=1&query=${fieldLocation.latitude},${fieldLocation.longitude}`, "_blank");
+                                                if (currentPosition !== null) {
+                                                    window.open(`https://www.google.com/maps/dir/${currentPosition.latitude},${currentPosition.longitude}/${fieldLocation.latitude},${fieldLocation.longitude}`, "_blank");
+                                                } else {
+                                                    window.open(`https://www.google.com/maps/search/?api=1&query=${fieldLocation.latitude},${fieldLocation.longitude}`, "_blank");
+                                                }
                                             },
                                         }}>
                                 </Marker>
