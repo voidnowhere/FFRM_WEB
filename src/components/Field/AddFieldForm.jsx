@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import {Notify} from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";

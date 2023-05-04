@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Header from "../Header.jsx";
 import axiosInstance from "../../axiosInstance.js";
 import AddFieldForm from "./AddFieldForm.jsx";

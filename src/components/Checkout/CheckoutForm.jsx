@@ -55,7 +55,7 @@ export default function CheckoutForm(props) {
 
         setIsLoading(true);
 
-        axiosInstance.get(`api/reservations/${props.currentReservationId}/payment/can-pay`).then(async () => {
+        axiosInstance.get(`api/payments/${props.currentReservationId}/can-pay`).then(async () => {
             const {error} = await stripe.confirmPayment({
                 elements,
                 redirect: 'if_required',

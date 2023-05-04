@@ -1,7 +1,7 @@
 import {Button, Col, Form, Image, Modal, Row} from "react-bootstrap";
 import {Notify} from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import ConsultMap from "./ConsultMap.jsx";
 
 Notify.init({

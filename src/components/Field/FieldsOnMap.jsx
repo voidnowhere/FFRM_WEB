@@ -2,7 +2,7 @@ import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {Icon} from "leaflet/src/layer/marker";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import React, {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import axiosInstance from "../../axiosInstance.js";
 import Form from "react-bootstrap/Form";
 
