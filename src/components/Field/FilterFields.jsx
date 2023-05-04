@@ -1,4 +1,4 @@
-import { FloatingLabel } from "react-bootstrap";
+import {FloatingLabel} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
 export default function FilterFields(props) {
