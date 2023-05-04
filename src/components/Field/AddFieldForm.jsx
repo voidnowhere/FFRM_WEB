@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {Form, Button, Modal, Row, Col} from "react-bootstrap";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
@@ -27,7 +27,7 @@ function AddFieldForm({
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [description, setDescription] = useState("");
-  const [type, setType] = useState("");
+  const [typeId, setTypeId] = useState("");
   const [is_active, setIs_active] = useState(false);
   const [soil_type, setSoil_type] = useState("");
   const [image, setImage] = useState("");
@@ -44,14 +44,18 @@ function AddFieldForm({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-  
+    const fieldType = {
+      id: typeId,
+      // Add any other properties of the type object if needed
+    };
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("address", address);
     formData.append("latitude", latitude);
     formData.append("longitude", longitude);
     formData.append("description", description);
-    formData.append("type", type);
+    formData.append("type", fieldType);
     formData.append("is_active", is_active);
     formData.append("soil_type", soil_type);
     formData.append("zone", zone);
@@ -65,7 +69,7 @@ function AddFieldForm({
         "Content-Type": "multipart/form-data",
       },
     })
-      .then((response) => {
+      .then(() => {
         Notify.success("Field added successfully.");
         getFields();
         setName("");
@@ -73,7 +77,7 @@ function AddFieldForm({
         setLatitude("");
         setLongitude("");
         setDescription("");
-        setType("");
+        setTypeId(null);
         setIs_active(false);
         setZone("");
         setCityId("");
@@ -222,11 +226,11 @@ function AddFieldForm({
             <div className="text-danger">{zoneError}</div>
           </Form.Group>
           <Form.Group>
-            <Form.Label>fieldType</Form.Label>
+            <Form.Label>FieldType</Form.Label>
             <Form.Select
               id="fieldTypeId"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
+              value={typeId}
+              onChange={(e) => setTypeId(e.target.value)}
             >
               <option>--Select a type--</option>
               {fieldTypes &&

@@ -38,6 +38,7 @@ function Reservations() {
     useEffect(() => {
         axiosInstance.get('api/reservations/').then(response => {
             setReservations(response.data);
+            console.log(response.data);
         });
     }, []);
 
