@@ -5,10 +5,20 @@ import {Report} from 'notiflix/build/notiflix-report-aio';
 import {MapContainer, Marker, TileLayer, Tooltip} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Header from "./Header.jsx";
+import marker_icon from '../assets/marker/marker-icon.png';
+import marker_shadow from '../assets/marker/marker-shadow.png';
+import marker_icon_2x from '../assets/marker/marker-icon-2x.png';
 import Datetime from 'react-datetime';
 import dayjs from "dayjs";
 import {FaClock, FaRegCalendarAlt} from "react-icons/all.js";
 import {useSelector} from "react-redux";
+
+const markerIcon = L.icon({
+    ...L.Icon.Default.prototype.options,
+    iconUrl: marker_icon,
+    iconRetinaUrl: marker_icon_2x,
+    shadowUrl: marker_shadow,
+});
 
 function Booking() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -212,11 +222,12 @@ function Booking() {
                                 {
                                     currentPosition
                                     &&
-                                    <Marker position={[currentPosition.latitude, currentPosition.longitude]}>
+                                    <Marker position={[currentPosition.latitude, currentPosition.longitude]}
+                                            icon={markerIcon}>
                                         <Tooltip direction="top" offset={[-15, -15]} permanent>Your location</Tooltip>
                                     </Marker>
                                 }
-                                <Marker position={[fieldLocation.latitude, fieldLocation.longitude]}
+                                <Marker position={[fieldLocation.latitude, fieldLocation.longitude]} icon={markerIcon}
                                         eventHandlers={{
                                             click: () => {
                                                 if (currentPosition !== null) {
