@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import Header from "../Header.jsx";
 import axiosInstance from "../../axiosInstance.js";
 import AddFieldForm from "./AddFieldForm.jsx";
-import { Confirm } from "notiflix/build/notiflix-confirm-aio";
-import { Notify } from "notiflix/build/notiflix-notify-aio";
+import {Confirm} from "notiflix/build/notiflix-confirm-aio";
+import {Notify} from "notiflix/build/notiflix-notify-aio";
 import UpdateFieldForm from "./UpdateFieldForm.jsx";
 import Form from "react-bootstrap/Form";
-import { Container, Button, Modal } from "react-bootstrap";
+import {Button, Container, Modal} from "react-bootstrap";
 import FieldsOnMap from "./FieldsOnMap.jsx";
 import FieldForm from "./FieldForm.jsx";
 

@@ -1,11 +1,7 @@
-import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
+import {MapContainer, Marker, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {Icon} from "leaflet/src/layer/marker";
-import MarkerClusterGroup from "react-leaflet-cluster";
-import React, {useEffect, useState, useCallback} from "react";
-import axiosInstance from "../../axiosInstance.js";
-import {Container, Form} from "react-bootstrap";
-import Header from "../Header.jsx";
+import React, {useEffect, useState} from "react";
 
 const FieldsOnMap = ({lat, long}) => {
     const position = [31.611530277838078, -8.047648552164675];

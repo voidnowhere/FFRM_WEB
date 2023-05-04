@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {Form, Button, Modal, Row, Col} from "react-bootstrap";
-import { Notify } from "notiflix/build/notiflix-notify-aio";
+import React, {useState} from "react";
+import {Button, Col, Form, Modal, Row} from "react-bootstrap";
+import {Notify} from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
 import Map from "./Map";
+
 Notify.init({
   position: "center-top", // Notification position
   distance: "10px", // Distance between notifications

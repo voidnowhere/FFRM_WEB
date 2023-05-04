@@ -3,7 +3,7 @@ import "leaflet/dist/leaflet.css";
 import {Icon} from "leaflet/src/layer/marker";
 import L from "leaflet";
 
-import React, {useState, useRef} from "react";
+import React, {useRef, useState} from "react";
 
 
 const Map = ({onSelect, center}) => {

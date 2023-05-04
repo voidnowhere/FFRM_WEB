@@ -144,7 +144,7 @@ function Reservations() {
             'No',
             () => {
                 axiosInstance
-                    .delete(`api/reservations/${reservationId}`)
+                    .delete(`api/reservations/${reservationId}/delete/`)
                     .then(() => {
                         setReservations(prevState => prevState.filter(
                             (reservation) => reservation.id !== reservationId
@@ -155,8 +155,15 @@ function Reservations() {
                         );
                     })
                     .catch((error) => {
-                        console.log(error);
-                    });
+                    if (error.response.status === 400) {
+                        Report.failure(
+                            'Failure',
+                            (error.response.data.message === undefined) ? 'Reservation has already begun and cannot be deleted.' : error.response.data.message,
+                            'Okay',
+                            {backOverlay: false}
+                        );
+                    }
+                });
             },
         )
 
@@ -169,7 +176,7 @@ function Reservations() {
             'Yes',
             'No',
             () => {
-                axiosInstance.put(`api/reservations/${reservationId}/`, {
+                axiosInstance.patch(`api/reservations/${reservationId}/update/`, {
                     is_public: isChecked
                 }).then(() => {
                     setReservations((prevState) => prevState.map((reservation) => {
