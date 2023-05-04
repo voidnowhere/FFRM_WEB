@@ -12,6 +12,7 @@ import FieldTypes from "./components/FieldTypes.jsx";
 import Reservations from "./components/Reservations.jsx";
 import Booking from "./components/Booking.jsx";
 import Fields from './components/Field/Fields'
+
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
     const isPlayer = useSelector(state => state.user.isPlayer);

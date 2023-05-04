@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useRef, useState} from "react";
 import axiosInstance from '../axiosInstance.js';
 import {Button, ButtonGroup, Container, FloatingLabel, Form, FormControl} from "react-bootstrap";
 import {Notify} from 'notiflix/build/notiflix-notify-aio';
@@ -7,15 +7,15 @@ import {useNavigate} from "react-router-dom";
 
 export default function Register() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
+    const emailRef = useRef();
     const [emailError, setEmailError] = useState('');
-    const [password, setPassword] = useState('');
+    const passwordRef = useRef();
     const [passwordError, setPasswordError] = useState('');
-    const [nic, setNic] = useState('');
+    const nicRef = useRef();
     const [nicError, setNicError] = useState('');
-    const [first_name, setFirstName] = useState('');
+    const firstNameRef = useRef();
     const [firstNameError, setFirstNameError] = useState('');
-    const [last_name, setLastName] = useState('');
+    const lastNameRef = useRef();
     const [lastNameError, setLastNameError] = useState('');
     const [isPlayerType, setIsPlayerType] = useState(false);
     const [isOwnerType, setIsOwnerType] = useState(false);
@@ -29,17 +29,17 @@ export default function Register() {
         }
         axiosInstance.post('api/users/register/', {
             type: (isPlayerType) ? 'P' : (isOwnerType) ? 'O' : '',
-            email: email,
-            password: password,
-            nic: nic,
-            first_name: first_name,
-            last_name: last_name,
+            email: emailRef.current.value.trim(),
+            password: passwordRef.current.value.trim(),
+            nic: nicRef.current.value.trim(),
+            first_name: firstNameRef.current.value.trim(),
+            last_name: lastNameRef.current.value.trim(),
         }).then((response) => {
-            setEmail('');
-            setPassword('');
-            setNic('');
-            setFirstName('');
-            setLastName('');
+            emailRef.current.value = '';
+            passwordRef.current.value = '';
+            nicRef.current.value = '';
+            firstNameRef.current.value = '';
+            lastNameRef.current.value = '';
             setEmailError('');
             setNicError('');
             setFirstNameError('');
@@ -57,7 +57,7 @@ export default function Register() {
             setFirstNameError(errors.first_name);
             setLastNameError(errors.last_name);
             setPasswordError(errors.password);
-            setPassword('');
+            passwordRef.current.value = '';
         });
     }
 
@@ -67,28 +67,23 @@ export default function Register() {
             <Container className="col-xl-3 col-lg-4 col-md-5 col-sm-6 col-10 mt-5 p-4 border rounded shadow">
                 <Form onSubmit={submit}>
                     <FloatingLabel label="Email address">
-                        <FormControl type="email" placeholder="name@example.com" value={email} required
-                                     onChange={(e) => setEmail(e.target.value.trim())}/>
+                        <FormControl ref={emailRef} type="email" placeholder="name@example.com" required/>
                         <div className="text-danger">{emailError}</div>
                     </FloatingLabel>
                     <FloatingLabel label="NIC" className="mt-3">
-                        <Form.Control type="text" placeholder="NIC" value={nic} required
-                                      onChange={(e) => setNic(e.target.value.trim())}/>
+                        <Form.Control ref={nicRef} type="text" placeholder="NIC" required/>
                         <div className="text-danger">{nicError}</div>
                     </FloatingLabel>
                     <FloatingLabel label="First name" className="mt-3">
-                        <Form.Control type="text" placeholder="First name" value={first_name} required
-                                      onChange={(e) => setFirstName(e.target.value.trim())}/>
+                        <Form.Control ref={firstNameRef} type="text" placeholder="First name" required/>
                         <div className="text-danger">{firstNameError}</div>
                     </FloatingLabel>
                     <FloatingLabel label="Last name" className="mt-3">
-                        <Form.Control type="text" placeholder="Last name" value={last_name} required
-                                      onChange={(e) => setLastName(e.target.value.trim())}/>
+                        <Form.Control ref={lastNameRef} type="text" placeholder="Last name" required/>
                         <div className="text-danger">{lastNameError}</div>
                     </FloatingLabel>
                     <FloatingLabel label="Password" className="mt-3">
-                        <Form.Control type="password" placeholder="Password" value={password} required
-                                      onChange={(e) => setPassword(e.target.value.trim())}/>
+                        <Form.Control ref={passwordRef} type="password" placeholder="Password" required/>
                         <div className="text-danger">{passwordError}</div>
                     </FloatingLabel>
                     <div className="mt-3">
