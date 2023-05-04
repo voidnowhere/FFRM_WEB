@@ -12,6 +12,7 @@ import FieldTypes from "./components/FieldTypes.jsx";
 import Reservations from "./components/Reservations.jsx";
 import Booking from "./components/Booking.jsx";
 import Fields from './components/Field/Fields'
+import PayedReservation from "./components/Field/PaidReservation.jsx";
 import "react-datetime/css/react-datetime.css";
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
         {path: "/reservations", element: (!isAuthenticated && !isPlayer) ? <Navigate to="/"/> : <Reservations/>},
         {path: "/field-types", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <FieldTypes/>},
         {path: "/fields", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <Fields/>},
+        {path: "/paid-reservations", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <PayedReservation/>},
         {path: "/booking", element: (isOwner) ? <Navigate to="/"/> : <Booking/>},
     ]);
 

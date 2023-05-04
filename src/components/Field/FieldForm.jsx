@@ -14,9 +14,8 @@ Notify.init({
     timeout: 3000,
 });
 
-function UpdateFieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
+function UpdateFieldForm({showModal, onHide, field, getFieldZone}) {
     const [updatedField, setUpdatedField] = useState(field);
-    const [id, setId] = useState(updatedField?.id);
     const [name, setName] = useState(updatedField?.name);
     const [address, setAddress] = useState(updatedField?.address);
     const [latitude, setLatitude] = useState(updatedField?.latitude);
@@ -24,18 +23,9 @@ function UpdateFieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
     const [description, setDescription] = useState(updatedField?.description);
     const [type, setType] = useState(updatedField?.type);
     const [is_active, setIs_active] = useState(updatedField?.is_active);
-
-    const [soilType, setSoilType] = useState(updatedField?.soil_type);
-    const TYPE_CHOICES = ["naturelle", "synthetique"];
-
-    const [zones, setZones] = useState([]);
-    const [field_types, setField_types] = useState([]);
     const [showMap, setShowMap] = useState(false);
     const [zoneId, setZoneId] = useState(updatedField?.zone);
     const [cityId, setCityId] = useState("");
-    const [image, setImage] = useState(updatedField?.image);
-
-
 
 
     useEffect(() => {
@@ -158,7 +148,7 @@ function UpdateFieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
                                 <Form.Label>fieldType</Form.Label>
                                 <Form.Control
                                     id="fieldTypeId"
-                                    value={getFieldType(updatedField?.type)}
+                                    value={updatedField?.type.name}
                                     readOnly
                                 >
                                 </Form.Control>
@@ -175,11 +165,11 @@ function UpdateFieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
                             </Form.Group>
                             <Form.Group controlId="formImage">
                                 <Form.Label>Field Picture</Form.Label>
-                                    <Image
-                                        src={updatedField?.image}
-                                        fluid
-                                        style={{maxHeight: "300px", marginRight: "10px"}}
-                                    />
+                                <Image
+                                    src={updatedField?.image}
+                                    fluid
+                                    style={{maxHeight: "300px", marginRight: "10px"}}
+                                />
 
                             </Form.Group>
                         </Col>
@@ -193,17 +183,17 @@ function UpdateFieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
                 {showMap && (
                     <Modal
 
-                           centered
-                           show={showMap}
-                           onHide={() => {
-                               setShowMap(false);
-                           }}
+                        centered
+                        show={showMap}
+                        onHide={() => {
+                            setShowMap(false);
+                        }}
                     >
                         <Modal.Header closeButton>
                             <Modal.Title>Field on Map</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <ConsultMap lat={updatedField.latitude} long={updatedField.longitude} />
+                            <ConsultMap lat={updatedField.latitude} long={updatedField.longitude}/>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button
