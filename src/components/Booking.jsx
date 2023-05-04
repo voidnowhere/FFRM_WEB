@@ -8,7 +8,7 @@ import Header from "./Header.jsx";
 import marker_icon from '../assets/marker/marker-icon.png';
 import marker_shadow from '../assets/marker/marker-shadow.png';
 import marker_icon_2x from '../assets/marker/marker-icon-2x.png';
-import Datetime from 'react-datetime';
+import ReactDatetimeClass from "react-datetime";
 import dayjs from "dayjs";
 import {FaClock, FaRegCalendarAlt} from "react-icons/all.js";
 import {useSelector} from "react-redux";
@@ -21,6 +21,7 @@ const markerIcon = L.icon({
 });
 
 function Booking() {
+    const DateTime = ReactDatetimeClass.default ?? ReactDatetimeClass;
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
     const dateTimeNow = dayjs().startOf('hour').add(1, 'hour');
     const [minHours, setMinHours] = useState(dayjs().add(1, 'hour').hour());
@@ -137,7 +138,7 @@ function Booking() {
                     <Col>
                         <label><strong>Select a date and time: </strong> <FaRegCalendarAlt/></label>
 
-                        <Datetime
+                        <DateTime
                             timeConstraints={{minutes: {step: 60}, hours: {min: minHours}}}
                             timeFormat='HH:mm'
                             value={beginDateTime}
