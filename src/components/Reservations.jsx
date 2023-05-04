@@ -21,12 +21,12 @@ import {Confirm} from 'notiflix/build/notiflix-confirm-aio';
 import jwt_decode from "jwt-decode";
 import {Notify} from 'notiflix/build/notiflix-notify-aio';
 
-
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-const loggedInPlayerId = (localStorage.getItem('access_token') !== null) ?
-    jwt_decode(localStorage.getItem('access_token')).user_id : null;
 
 function Reservations() {
+    const loggedInPlayerId = (localStorage.getItem('access_token') !== null) ?
+        jwt_decode(localStorage.getItem('access_token')).user_id : null;
+
     const [reservations, setReservations] = useState([]);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
@@ -49,7 +49,7 @@ function Reservations() {
             'Yes',
             'No',
             () => {
-                axiosInstance.get(`api/reservations/${reservationId}/payment/`).then(response => {
+                axiosInstance.get(`api/payments/${reservationId}/`).then(response => {
                     setClientSecret(response.data.client_secret);
                     setCurrentReservationId(reservationId);
                     setShowPaymentModal(true);
@@ -145,7 +145,7 @@ function Reservations() {
             'No',
             () => {
                 axiosInstance
-                    .delete(`api/reservations/${reservationId}`)
+                    .delete(`api/reservations/${reservationId}/delete/`)
                     .then(() => {
                         setReservations(prevState => prevState.filter(
                             (reservation) => reservation.id !== reservationId
@@ -156,8 +156,15 @@ function Reservations() {
                         );
                     })
                     .catch((error) => {
-                        console.log(error);
-                    });
+                    if (error.response.status === 400) {
+                        Report.failure(
+                            'Failure',
+                            (error.response.data.message === undefined) ? 'Reservation has already begun and cannot be deleted.' : error.response.data.message,
+                            'Okay',
+                            {backOverlay: false}
+                        );
+                    }
+                });
             },
         )
 
@@ -170,7 +177,7 @@ function Reservations() {
             'Yes',
             'No',
             () => {
-                axiosInstance.put(`api/reservations/${reservationId}/`, {
+                axiosInstance.patch(`api/reservations/${reservationId}/update/`, {
                     is_public: isChecked
                 }).then(() => {
                     setReservations((prevState) => prevState.map((reservation) => {

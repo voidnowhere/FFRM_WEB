@@ -2,8 +2,7 @@ import {MapContainer, Popup, TileLayer, useMapEvent} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {Icon} from "leaflet/src/layer/marker";
 import L from "leaflet";
-
-import React, {useState, useRef} from "react";
+import {useRef, useState} from "react";
 
 
 const Map = ({onSelect, center}) => {
@@ -19,7 +18,7 @@ const Map = ({onSelect, center}) => {
 
     const handleMapClick = (e) => {
         const {latlng} = e;
-      //  console.log(latlng);
+        //  console.log(latlng);
         if (selectedMarker) {
             selectedMarker.setLatLng(latlng);
             setCoords([latlng.lat, latlng.lng]);
@@ -30,7 +29,7 @@ const Map = ({onSelect, center}) => {
             setSelectedMarker(marker);
             setCoords([latlng.lat, latlng.lng]);
             onSelect([latlng.lat, latlng.lng]);
-           // console.log(coords);
+            // console.log(coords);
         }
 
     };

@@ -1,9 +1,8 @@
-import {Form, Button, Modal, Row, Col} from "react-bootstrap";
+import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import {Notify} from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Map from "./Map";
-import Card from 'react-bootstrap/Card';
 
 Notify.init({
     position: "center-top", // Notification position
@@ -42,7 +41,6 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
     const [cityId, setCityId] = useState("");
     const [oldImage, setOldImage] = useState(updatedField?.image);
     const [image, setImage] = useState("");
-
 
 
     useEffect(() => {
@@ -136,7 +134,6 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
         setLatitude(coords[0]);
         setLongitude(coords[1]);
     };
-
 
 
     return (
@@ -290,13 +287,13 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
                                         <img
                                             src={URL.createObjectURL(image)}
                                             alt="New field image"
-                                            style={{ maxHeight: "100px", marginRight: "10px" }}
+                                            style={{maxHeight: "100px", marginRight: "10px"}}
                                         />
                                     ) : oldImage ? (
                                         <img
                                             src={oldImage}
                                             alt="Old field image"
-                                            style={{ maxHeight: "100px", marginRight: "10px" }}
+                                            style={{maxHeight: "100px", marginRight: "10px"}}
                                         />
                                     ) : null}
                                     <Form.Control
