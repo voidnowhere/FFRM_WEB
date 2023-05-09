@@ -14,7 +14,7 @@ Notify.init({
     timeout: 3000,
 });
 
-function UpdateFieldForm({showModal, onHide, field,getFieldZone}) {
+function FieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
     const [updatedField, setUpdatedField] = useState(field);
     const [name, setName] = useState(updatedField?.name);
     const [address, setAddress] = useState(updatedField?.address);
@@ -150,7 +150,7 @@ function UpdateFieldForm({showModal, onHide, field,getFieldZone}) {
                                 <Form.Label>fieldType</Form.Label>
                                 <Form.Control
                                     id="fieldTypeId"
-                                    value={updatedField?.type.name}
+                                    value={getFieldType(type)}
                                     readOnly
                                 >
                                 </Form.Control>
@@ -214,4 +214,4 @@ function UpdateFieldForm({showModal, onHide, field,getFieldZone}) {
     );
 }
 
-export default UpdateFieldForm;
+export default FieldForm;

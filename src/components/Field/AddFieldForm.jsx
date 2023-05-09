@@ -44,10 +44,6 @@ function AddFieldForm({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const fieldType = {
-      id: typeId,
-      // Add any other properties of the type object if needed
-    };
 
     const formData = new FormData();
     formData.append("name", name);
@@ -55,7 +51,7 @@ function AddFieldForm({
     formData.append("latitude", latitude);
     formData.append("longitude", longitude);
     formData.append("description", description);
-    formData.append("type", fieldType);
+    formData.append("type", typeId)
     formData.append("is_active", is_active);
     formData.append("soil_type", soil_type);
     formData.append("zone", zone);
