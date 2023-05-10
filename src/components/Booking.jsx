@@ -51,7 +51,7 @@ function Booking() {
                 });
             },
             () => {
-                axiosInstance.post("api/booking/fields/", {
+                axiosInstance.post("api/bookings/fields/", {
                     begin_date_time: beginDateTime,
                     end_date_time: endDateTime
                 }).then((response) => {
