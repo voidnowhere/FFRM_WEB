@@ -213,17 +213,18 @@ export default function Fields() {
             Consult
           </button>
           <button
+              className="btn btn-secondary"
+              onClick={() => handleEdit(field)}
+          >
+            Edit
+          </button>
+          <button
             className="btn btn-danger"
             onClick={() => handleDelete(field?.id)}
           >
             Delete
           </button>
-          <button
-            className="btn btn-secondary"
-            onClick={() => handleEdit(field)}
-          >
-            Edit
-          </button>
+
         </td>
       </tr>
     );

@@ -1,9 +1,9 @@
-import {Button, Col, Form, Image, Modal, Row} from "react-bootstrap";
+import {Form, Button, Modal, Row, Col} from "react-bootstrap";
 import {Notify} from "notiflix/build/notiflix-notify-aio";
 import axiosInstance from "../../axiosInstance.js";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import { Image } from 'react-bootstrap';
 import ConsultMap from "./ConsultMap.jsx";
-
 Notify.init({
     position: "center-top", // Notification position
     distance: "10px", // Distance between notifications
@@ -14,7 +14,7 @@ Notify.init({
     timeout: 3000,
 });
 
-function UpdateFieldForm({showModal, onHide, field, getFieldZone}) {
+function FieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
     const [updatedField, setUpdatedField] = useState(field);
     const [name, setName] = useState(updatedField?.name);
     const [address, setAddress] = useState(updatedField?.address);
@@ -26,6 +26,8 @@ function UpdateFieldForm({showModal, onHide, field, getFieldZone}) {
     const [showMap, setShowMap] = useState(false);
     const [zoneId, setZoneId] = useState(updatedField?.zone);
     const [cityId, setCityId] = useState("");
+
+
 
 
     useEffect(() => {
@@ -148,7 +150,7 @@ function UpdateFieldForm({showModal, onHide, field, getFieldZone}) {
                                 <Form.Label>fieldType</Form.Label>
                                 <Form.Control
                                     id="fieldTypeId"
-                                    value={updatedField?.type.name}
+                                    value={getFieldType(type)}
                                     readOnly
                                 >
                                 </Form.Control>
@@ -165,11 +167,11 @@ function UpdateFieldForm({showModal, onHide, field, getFieldZone}) {
                             </Form.Group>
                             <Form.Group controlId="formImage">
                                 <Form.Label>Field Picture</Form.Label>
-                                <Image
-                                    src={updatedField?.image}
-                                    fluid
-                                    style={{maxHeight: "300px", marginRight: "10px"}}
-                                />
+                                    <Image
+                                        src={updatedField?.image}
+                                        fluid
+                                        style={{maxHeight: "300px", marginRight: "10px"}}
+                                    />
 
                             </Form.Group>
                         </Col>
@@ -183,17 +185,17 @@ function UpdateFieldForm({showModal, onHide, field, getFieldZone}) {
                 {showMap && (
                     <Modal
 
-                        centered
-                        show={showMap}
-                        onHide={() => {
-                            setShowMap(false);
-                        }}
+                           centered
+                           show={showMap}
+                           onHide={() => {
+                               setShowMap(false);
+                           }}
                     >
                         <Modal.Header closeButton>
                             <Modal.Title>Field on Map</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <ConsultMap lat={updatedField.latitude} long={updatedField.longitude}/>
+                            <ConsultMap lat={updatedField.latitude} long={updatedField.longitude} />
                         </Modal.Body>
                         <Modal.Footer>
                             <Button
@@ -212,4 +214,4 @@ function UpdateFieldForm({showModal, onHide, field, getFieldZone}) {
     );
 }
 
-export default UpdateFieldForm;
+export default FieldForm;
