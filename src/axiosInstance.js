@@ -52,7 +52,7 @@ axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
         // 401 Unauthorized
-        if (error.response.status === 401) {
+        if (error.response.status === 401 && !error.response.request.responseURL.includes('api/token/')) {
             logout();
         }
         return Promise.reject(error);
