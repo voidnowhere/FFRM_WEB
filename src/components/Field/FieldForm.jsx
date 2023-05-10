@@ -124,7 +124,8 @@ function FieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
                                     readOnly
                                 />
                             </Form.Group>
-
+                        </Col>
+                        <Col md={6}>
                             <Form.Group controlId="formCity">
                                 <Form.Label>City</Form.Label>
                                 <Form.Control
@@ -134,8 +135,7 @@ function FieldForm({showModal, onHide, field,getFieldZone,getFieldType}) {
                                 </Form.Control>
                             </Form.Group>
 
-                        </Col>
-                        <Col md={6}>
+
                             <Form.Group controlId="formZone">
                                 <Form.Label>Zone</Form.Label>
                                 <Form.Control

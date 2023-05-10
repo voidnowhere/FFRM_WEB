@@ -16,7 +16,6 @@ Notify.init({
 
 function UpdateFieldForm({showModal, onHide, field, cities, updateField, currentLocation}) {
     const [updatedField, setUpdatedField] = useState(field);
-    const [id, setId] = useState(updatedField?.id);
     const [name, setName] = useState(updatedField?.name);
     const [address, setAddress] = useState(updatedField?.address);
     const [latitude, setLatitude] = useState(updatedField?.latitude);
@@ -53,23 +52,19 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
     }, []);
 
     useEffect(() => {
-        const fetchFieldTypes = async () => {
-            const result = await axiosInstance.get("/api/zones/");
-            setZones(result.data);
-            // console.log(result.data);
-        };
-        fetchFieldTypes();
-    }, []);
-
-    useEffect(() => {
         const fetchCity = async () => {
             const result = await axiosInstance.get(`/api/cities/${updatedField?.zone}/city`);
             setCityId(result.data.id);
-            //console.log(result.data);
+
+            const fetchzones = async (cityId) => {
+                const result = await axiosInstance.get("/api/zones/");
+                const filteredZones = result.data.filter(zone => zone.city === cityId);
+                setZones(filteredZones);
+            };
+            fetchzones(result.data.id);
         };
         fetchCity();
     }, []);
-
     const handleShowMapChange = (e) => {
         setShowMap(e.target.checked);
     };
@@ -102,16 +97,16 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
         })
             .then((response) => {
                 //console.log(response);
-
+                onHide();
                 Notify.success("Field updated successfully.");
                 // Reset the form fields
                 // Call the onAddField callback function to refresh the list of fields
                 updateField(response.data);
-                onHide();
+
             })
             .catch((error) => {
                 const errors = error.response.data;
-                console.log(errors);
+                //console.log(errors);
                 setNameError(errors.name);
                 setAddressError(errors.address);
                 setDescriptionError(errors.description);
@@ -217,7 +212,7 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
                                 <Form.Label>City</Form.Label>
                                 <Form.Control
                                     as="select"
-                                    value={cityId}
+                                    value={cityId || undefined}
                                     onChange={handleCityChange}
                                 >
                                     <option value="">--Select a city--</option>
@@ -234,7 +229,7 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
                                 <Form.Label>Zone</Form.Label>
                                 <Form.Control
                                     as="select"
-                                    value={zoneId}
+                                    value={zoneId || undefined}
                                     onChange={(event) => setZoneId(event.target.value)}
                                 >
                                     <option value="">--Select a zone--</option>
@@ -250,7 +245,7 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
                                 <Form.Label>fieldType</Form.Label>
                                 <Form.Select
                                     id="fieldTypeId"
-                                    value={type}
+                                    value={type || undefined}
                                     onChange={(e) => setType(e.target.value)}
                                 >
                                     <option>--Select a type--</option>
@@ -267,7 +262,7 @@ function UpdateFieldForm({showModal, onHide, field, cities, updateField, current
                                 <Form.Label>Soil Type</Form.Label>
                                 <Form.Control
                                     as="select"
-                                    value={soilType}
+                                    value={soilType || undefined }
                                     onChange={(event) => setSoilType(event.target.value)}
                                 >
                                     <option value="">Choose...</option>
