@@ -52,6 +52,8 @@ export default function Header() {
                                 >Field types</Nav.Link>
                                 <Nav.Link as={Link} to="/fields" active={Boolean(useMatch('/fields'))}
                                 >Fields</Nav.Link>
+                                <Nav.Link as={Link} to="/paid-reservations" active={Boolean(useMatch('/paid-reservations'))}
+                                >Reservations</Nav.Link>
                             </>
                         }
                         {

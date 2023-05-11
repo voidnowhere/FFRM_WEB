@@ -11,7 +11,7 @@ function PaidReservation() {
     useEffect(() => {
         axiosInstance.get('api/fields/paid_reservations/').then(response => {
             setReservations(response.data);
-            console.log(response.data);
+           // console.log(response.data);
         });
     }, []);
 
@@ -25,7 +25,7 @@ function PaidReservation() {
             && reservationDate.getMonth() === selectedDate.getMonth()
             && reservationDate.getFullYear() === selectedDate.getFullYear();
     });
-    console.log(filteredReservations);
+   // console.log(filteredReservations);
     return (
         <>
             <Header/>
