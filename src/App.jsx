@@ -14,6 +14,7 @@ import Booking from "./components/Booking.jsx";
 import Fields from './components/Field/Fields'
 import PayedReservation from "./components/Field/PaidReservation.jsx";
 import "react-datetime/css/react-datetime.css";
+import {Analytics} from '@vercel/analytics/react';
 
 export default function App() {
     const isAuthenticated = useSelector(state => state.user.isAuthenticated);
@@ -33,11 +34,17 @@ export default function App() {
         {path: "/reservations", element: (!isAuthenticated && !isPlayer) ? <Navigate to="/"/> : <Reservations/>},
         {path: "/field-types", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <FieldTypes/>},
         {path: "/fields", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <Fields/>},
-        {path: "/paid-reservations", element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <PayedReservation/>},
+        {
+            path: "/paid-reservations",
+            element: (!isAuthenticated && !isOwner) ? <Navigate to="/"/> : <PayedReservation/>
+        },
         {path: "/booking", element: (isOwner) ? <Navigate to="/"/> : <Booking/>},
     ]);
 
     return (
-        <RouterProvider router={router}/>
+        <>
+            <RouterProvider router={router}/>
+            <Analytics/>
+        </>
     )
 }
