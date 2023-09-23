@@ -1,0 +1,11 @@
+version: '3'
+services:
+  node:
+    container_name: ffrm-node
+    image: node:18
+    volumes:
+      - .:/app
+    ports:
+      - '${APP_PORT}:5173'
+    working_dir: /app
+    entrypoint: [ 'sh', '-c', 'npm install -g npm && npm install && npm run dev' ]
